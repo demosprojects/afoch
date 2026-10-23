@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicados | AFOCH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-config.js"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-afochClaro text-slate-800 min-h-screen flex flex-col" data-pagina="comunicados">
+    <div id="site-header"></div>
+    <div id="page-banner" data-titulo="Comunicados" data-bajada="Comunicados oficiales del Tribunal de Disciplina, Consejo Directivo y Secretaría."></div>
+
+    <main class="container mx-auto px-6 py-6 md:py-10 flex-1">
+        <div id="contenedor-comunicados" class="space-y-4 max-w-4xl"></div>
+    </main>
+
+    <dialog id="visor" class="bg-white text-slate-800 border border-slate-300 w-full h-[100dvh] max-w-none max-h-none sm:w-[95vw] sm:max-w-5xl sm:h-[88vh] p-0 backdrop:bg-black/60">
+        <div class="flex flex-col h-full">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-0 px-4 py-3 border-b border-slate-200">
+                <h2 id="visor-titulo" class="flex-1 min-w-[12rem] font-sports uppercase text-base sm:text-lg text-afochAzul leading-tight"></h2>
+                <button id="visor-copiar" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio">Copiar link</button>
+                <a id="visor-descarga" href="#" target="_blank" rel="noopener" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio">Descargar</a>
+                <a id="visor-drive" href="#" target="_blank" rel="noopener" class="inline-block py-2 text-xs text-slate-500 hover:text-afochMedio">Abrir en Drive</a>
+                <button id="visor-cerrar" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio" aria-label="Cerrar visor">Cerrar ✕</button>
+            </div>
+            <div class="relative flex-1">
+                <div id="visor-cargando" class="absolute inset-0 z-10 bg-white flex items-center justify-center"></div>
+                <iframe id="visor-frame" class="absolute inset-0 w-full h-full border-0 bg-white" title="Vista del comunicado en PDF"></iframe>
+            </div>
+        </div>
+    </dialog>
+    <div id="site-footer"></div>
+
+    <script type="module" src="layout.js"></script>
+    <script type="module">
+        import { listarComunicados } from './firebase.js';
+        import { cargando, pelota, sinDatos, errorCarga } from './ui.js';
+
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const TZ = 'America/Argentina/Buenos_Aires';
+        const fmt = d => d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: TZ }).replace(/\./g, '').toUpperCase();
+
+        let lista = [];
+        const visor = $('visor');
+
+        async function cargar() {
+            const cont = $('contenedor-comunicados');
+            cont.innerHTML = cargando('comunicados', 4, true);
+            try {
+                lista = await listarComunicados(100);
+            } catch (e) {
+                console.error('No se pudieron cargar los comunicados', e);
+                cont.innerHTML = errorCarga('los comunicados');
+                return;
+            }
+            if (!lista.length) {
+                cont.innerHTML = sinDatos('comunicados');
+                return;
+            }
+            cont.innerHTML = lista.map((c, i) => {
+                const conPdf = Boolean(c.driveId);
+                const titulo = conPdf
+                    ? `<a href="comunicados.html?id=${encodeURIComponent(c.id)}" data-ver="${esc(c.id)}" class="hover:text-afochMedio transition">${esc(c.titulo)}</a>`
+                    : esc(c.titulo);
+                return `
+            <article ${conPdf ? `data-ver="${esc(c.id)}"` : ''} class="group bg-white border border-slate-200 border-l-4 border-l-afochCeleste hover:shadow-md p-6 transition ${conPdf ? 'cursor-pointer' : ''}">
+                <div class="flex justify-between text-[11px] font-semibold tracking-wide uppercase text-afochMedio mb-2"><span>${esc(c.categoria)} · N° ${esc(c.numero)}</span><span>${esc(fmt(c.fecha))}</span></div>
+                <h3 class="font-sports uppercase text-xl text-afochAzul leading-snug">${titulo}</h3>
+                ${c.resumen ? `<p class="text-slate-600 text-sm mt-2">${esc(c.resumen)}</p>` : ''}
+                ${conPdf ? '<span class="inline-block mt-4 text-xs font-semibold text-slate-500 group-hover:text-afochMedio transition">Ver PDF →</span>' : ''}
+            </article>`;
+            }).join('');
+        }
+
+        /** Abre el visor con el PDF del comunicado y deja el link compartible en la barra de direcciones. */
+        function abrir(id) {
+            const c = lista.find(x => x.id === id);
+            if (!c || !c.driveId) return false;
+            $('visor-titulo').textContent = `N° ${c.numero} · ${c.titulo}`;
+            $('visor-drive').href = c.driveUrl;
+            $('visor-descarga').href = c.descargaUrl;
+            $('visor-cargando').innerHTML = pelota('Abriendo comunicado…');
+            $('visor-cargando').classList.remove('hidden');
+            $('visor-frame').src = c.previewUrl;
+            if (!visor.open) visor.showModal();
+            document.body.classList.add('overflow-hidden');
+            history.replaceState(null, '', `${location.pathname}?id=${encodeURIComponent(id)}`);
+            return true;
+        }
+
+        $('contenedor-comunicados').addEventListener('click', e => {
+            const link = e.target.closest('a');
+            if (link && !link.hasAttribute('data-ver')) return; // otros links: comportamiento normal
+            const objetivo = e.target.closest('[data-ver]');
+            if (!objetivo) return;
+            e.preventDefault();
+            abrir(objetivo.dataset.ver);
+        });
+
+        $('visor-frame').addEventListener('load', () => {
+            if ($('visor-frame').getAttribute('src') !== 'about:blank') $('visor-cargando').classList.add('hidden');
+        });
+
+        const cerrar = () => visor.close();
+        $('visor-cerrar').addEventListener('click', cerrar);
+        visor.addEventListener('click', e => { if (e.target === visor) cerrar(); }); // clic fuera
+        visor.addEventListener('close', () => {
+            document.body.classList.remove('overflow-hidden');
+            $('visor-frame').src = 'about:blank';
+            history.replaceState(null, '', location.pathname);
+        });
+
+        $('visor-copiar').addEventListener('click', async () => {
+            const boton = $('visor-copiar');
+            try {
+                await navigator.clipboard.writeText(location.href);
+                boton.textContent = 'Link copiado';
+            } catch {
+                prompt('Copiá este link:', location.href);
+            }
+            setTimeout(() => { boton.textContent = 'Copiar link'; }, 2000);
+        });
+
+        await cargar();
+
+        // Link compartido: comunicados.html?id=XXXX abre directamente el PDF
+        const idCompartido = new URLSearchParams(location.search).get('id');
+        if (idCompartido && !abrir(idCompartido)) {
+            history.replaceState(null, '', location.pathname);
+            $('contenedor-comunicados').insertAdjacentHTML('afterbegin',
+                '<p class="text-sm text-amber-700 mb-2">El comunicado que buscás no está disponible. Estos son los comunicados vigentes.</p>');
+        }
+    </script>
+</body>
+</html>

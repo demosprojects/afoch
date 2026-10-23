@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso administrativo | AFOCH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="icon" type="image/png" href="https://leogalazzo06.github.io/flyersliga/afoch-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: {
+            colors: { afochAzul: '#001A3D', afochMedio: '#0B5FA5', afochCeleste: '#00D1FF', afochClaro: '#F3F6FA' },
+            fontFamily: { sports: ['Oswald', 'sans-serif'], sans: ['Inter', 'sans-serif'] }
+        } } }
+    </script>
+</head>
+<body class="font-sans bg-afochClaro text-slate-800 min-h-screen flex flex-col items-center justify-center p-6">
+    <div class="w-full max-w-sm">
+        <a href="index.html" class="flex items-center justify-center gap-3 mb-6">
+            <img src="https://leogalazzo06.github.io/flyersliga/afoch-logo.png" alt="Escudo de AFOCH" class="h-12 w-auto object-contain">
+            <span class="font-sports text-2xl text-afochAzul tracking-wide">AFOCH</span>
+        </a>
+        <div class="bg-white border border-slate-200 border-t-4 border-t-afochCeleste p-6 sm:p-8">
+            <h1 class="font-sports uppercase text-2xl text-afochAzul leading-tight mb-1">Acceso administrativo</h1>
+            <p class="text-sm text-slate-500 mb-6">Solo personal autorizado de la liga.</p>
+            <label class="block text-sm font-semibold text-slate-700 mb-1" for="email">Correo</label>
+            <input id="email" type="email" autocomplete="username" class="w-full mb-4 bg-white border border-slate-300 px-3 py-2 outline-none focus:border-afochMedio focus:ring-4 focus:ring-afochCeleste/20 transition">
+            <label class="block text-sm font-semibold text-slate-700 mb-1" for="pass">Contraseña</label>
+            <input id="pass" type="password" autocomplete="current-password" class="w-full mb-4 bg-white border border-slate-300 px-3 py-2 outline-none focus:border-afochMedio focus:ring-4 focus:ring-afochCeleste/20 transition">
+            <p id="error" class="text-sm text-red-600 min-h-[1.25rem] mb-2" role="alert"></p>
+            <button id="entrar" class="w-full bg-afochAzul text-white font-semibold py-2.5 hover:bg-afochMedio transition">Ingresar</button>
+        </div>
+        <p class="text-center mt-6"><a href="index.html" class="text-sm font-semibold text-afochMedio hover:underline">← Volver al sitio</a></p>
+    </div>
+
+    <script type="module">
+        import { login, logout, onSesion, esAdmin } from './firebase.js';
+
+        const $ = id => document.getElementById(id);
+
+        onSesion(async user => {
+            if (user && await esAdmin(user)) location.href = 'panel.html';
+        });
+
+        async function entrar() {
+            $('error').textContent = '';
+            try {
+                const { user } = await login($('email').value.trim(), $('pass').value);
+                if (!(await esAdmin(user))) {
+                    await logout();
+                    $('error').textContent = 'Tu usuario no tiene permisos de administración.';
+                }
+            } catch (e) {
+                $('error').textContent = 'Correo o contraseña incorrectos.';
+            }
+        }
+        $('entrar').addEventListener('click', entrar);
+        $('pass').addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); });
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clubes | AFOCH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-config.js"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-afochClaro text-slate-800 min-h-screen flex flex-col" data-pagina="clubes">
+    <div id="site-header"></div>
+    <div id="page-banner" data-titulo="Clubes afiliados" data-bajada="Instituciones que forman parte de la Asociación."></div>
+
+    <main class="container mx-auto px-6 py-6 md:py-10 flex-1">
+        <div id="grid-clubes" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module" src="layout.js"></script>
+    <script type="module">
+        import { listarClubes } from './firebase.js';
+        import { optimizar } from './cloudinary.js';
+        import { cargando, sinDatos, errorCarga } from './ui.js';
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const TZ = 'America/Argentina/Buenos_Aires';
+        const vacio = m => `<p class="text-slate-500 text-sm">${m}</p>`;
+        const grid = $('grid-clubes');
+        grid.innerHTML = cargando('clubes', 8);
+        try {
+            const clubes = (await listarClubes()).filter(c => c.activo !== false);
+            grid.className = clubes.length ? grid.className : '';
+            grid.innerHTML = clubes.length ? clubes.map(c => `
+                <div class="bg-white border border-slate-200 p-4 sm:p-6 text-center hover:border-afochMedio hover:shadow-sm transition">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 flex items-center justify-center">
+                        ${c.escudoUrl ? `<img src="${esc(optimizar(c.escudoUrl, 200))}" class="max-w-full max-h-full object-contain" alt="Escudo de ${esc(c.nombre)}">` : `<span class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-afochClaro border border-slate-200 flex items-center justify-center font-sports text-2xl text-slate-400">${esc((c.nombreCorto || c.nombre).substring(0, 3).toUpperCase())}</span>`}
+                    </div>
+                    <h2 class="font-sports uppercase text-base sm:text-lg text-afochAzul leading-snug">${esc(c.nombre)}</h2>
+                    ${c.nombreCorto && c.nombreCorto !== c.nombre ? `<p class="text-xs text-slate-500 mt-1">${esc(c.nombreCorto)}</p>` : ''}
+                </div>`).join('') : sinDatos('clubes');
+        } catch (e) { console.error(e); grid.className = ''; grid.innerHTML = errorCarga('los clubes'); }
+</script>
+</body>
+</html>

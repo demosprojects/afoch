@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel | AFOCH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="icon" type="image/png" href="https://leogalazzo06.github.io/flyersliga/afoch-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: {
+            colors: { afochAzul: '#001A3D', afochMedio: '#0B5FA5', afochCeleste: '#00D1FF', afochClaro: '#F3F6FA' },
+            fontFamily: { sports: ['Oswald', 'sans-serif'], sans: ['Inter', 'sans-serif'] }
+        } } }
+    </script>
+    <style>
+        .campo { width:100%; background:#fff; border:1px solid #CBD5E1; color:#1E293B; padding:.5rem .75rem; font-size:.9rem; outline:none; transition:border-color .15s, box-shadow .15s; }
+        .campo::placeholder { color:#94A3B8; }
+        .campo:focus { border-color:#0B5FA5; box-shadow:0 0 0 3px rgba(0,209,255,.22); }
+        .campo::file-selector-button { margin-right:.75rem; border:0; background:#F3F6FA; color:#001A3D; font-weight:600; padding:.3rem .75rem; cursor:pointer; }
+        input[type="checkbox"] { accent-color:#0B5FA5; width:1rem; height:1rem; }
+        .btn { background:#001A3D; color:#fff; font-weight:600; font-size:.875rem; padding:.6rem 1.25rem; transition:background .15s; }
+        .btn:hover { background:#0B5FA5; }
+        .btn:disabled { opacity:.5; cursor:not-allowed; }
+        .btn-sec { background:#fff; border:1px solid #CBD5E1; color:#334155; font-weight:600; font-size:.875rem; padding:.6rem 1.25rem; transition:border-color .15s, color .15s; }
+        .btn-sec:hover { border-color:#0B5FA5; color:#0B5FA5; }
+        .tab { padding:.8rem 0; font-size:.875rem; font-weight:600; color:#475569; border-bottom:2px solid transparent; white-space:nowrap; }
+        .tab:hover { color:#0B5FA5; }
+        .tab[aria-selected="true"] { color:#001A3D; border-bottom-color:#00D1FF; }
+    </style>
+</head>
+<body class="font-sans bg-afochClaro text-slate-800 min-h-screen">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="container mx-auto px-6 h-14 md:h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="https://leogalazzo06.github.io/flyersliga/afoch-logo.png" alt="Escudo de AFOCH" class="h-10 w-auto object-contain">
+                <span class="leading-tight">
+                    <span class="block font-sports text-xl text-afochAzul tracking-wide">AFOCH</span>
+                    <span class="block text-[11px] text-slate-500">Panel de administración</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-5 text-sm font-semibold">
+                <a href="index.html" class="text-slate-600 hover:text-afochMedio">Ver sitio</a>
+                <button id="salir" class="border border-slate-300 text-slate-700 px-4 py-1.5 hover:border-afochMedio hover:text-afochMedio transition">Cerrar sesión</button>
+            </div>
+        </div>
+        <div role="tablist" aria-label="Secciones del panel" class="container mx-auto px-6 flex gap-6 sm:gap-8 overflow-x-auto border-t border-slate-100">
+            <button class="tab" role="tab" aria-selected="true" data-tab="clubes">Clubes</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="partidos">Partidos</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="programacion">Programación</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="noticias">Noticias</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="comunicados">Comunicados</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="galeria">Galería</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="banner">Banner</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-10">
+        <p id="estado" class="hidden" role="status"></p>
+
+        <!-- CLUBES -->
+        <section id="tab-clubes">
+            <div class="grid md:grid-cols-[320px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 id="club-titulo" class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Nuevo club</h2>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-nombre">Nombre completo</label><input id="c-nombre" class="campo" placeholder="Club Atlético Alvear"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-corto">Nombre corto</label><input id="c-corto" class="campo" placeholder="Alvear"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="c-escudo">Escudo</label>
+                        <input id="c-escudo" type="file" accept="image/*" class="campo">
+                        <img id="c-preview" class="hidden w-20 h-20 object-contain mt-2" alt="Vista previa del escudo">
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button id="c-guardar" class="btn">Guardar club</button>
+                        <button id="c-cancelar" class="btn-sec hidden">Cancelar</button>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Clubes cargados</h2>
+                    <ul id="lista-clubes" class="divide-y divide-slate-200 border border-slate-200"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTIDOS -->
+        <section id="tab-partidos" class="hidden">
+            <div class="grid md:grid-cols-[320px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 id="partido-titulo" class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Nuevo partido</h2>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="p-torneo">Torneo / zona</label><input id="p-torneo" class="campo" placeholder="Primera División - Zona A"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="p-local">Local</label><select id="p-local" class="campo"></select></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="p-visit">Visitante</label><select id="p-visit" class="campo"></select></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="p-fecha">Fecha y hora</label><input id="p-fecha" type="datetime-local" class="campo"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="p-estadio">Estadio</label><input id="p-estadio" class="campo" placeholder="Cancha de Alvear"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="p-estado">Estado</label>
+                        <select id="p-estado" class="campo">
+                            <option value="programado">Programado</option>
+                            <option value="suspendido">Suspendido</option>
+                            <option value="jugado">Jugado</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-3 pt-2">
+                        <button id="p-guardar" class="btn">Guardar partido</button>
+                        <button id="p-cancelar" class="btn-sec hidden">Cancelar</button>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Partidos cargados</h2>
+                    <ul id="lista-partidos" class="divide-y divide-slate-200 border border-slate-200"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOTICIAS -->
+        <section id="tab-noticias" class="hidden">
+            <div class="grid md:grid-cols-[360px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 id="noticia-titulo" class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Nueva noticia</h2>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="n-titulo">Título</label><input id="n-titulo" class="campo" placeholder="Titular de la noticia"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="n-cat">Categoría</label>
+                        <select id="n-cat" class="campo">
+                            <option>INSTITUCIONAL</option><option>PRENSA</option><option>TORNEOS</option><option>JUVENILES</option><option>CLUBES</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="n-fecha">Fecha de publicación</label><input id="n-fecha" type="datetime-local" class="campo"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="n-resumen">Resumen (bajada corta)</label><textarea id="n-resumen" rows="2" class="campo" placeholder="Una o dos líneas"></textarea></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="n-contenido">Contenido</label><textarea id="n-contenido" rows="8" class="campo" placeholder="Texto completo. Dejá una línea en blanco para separar párrafos."></textarea></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="n-imagen">Imagen de portada</label>
+                        <input id="n-imagen" type="file" accept="image/*" class="campo">
+                        <img id="n-preview" class="hidden w-full max-h-40 object-cover mt-2" alt="Vista previa de la portada">
+                    </div>
+                    <label class="flex items-center gap-2 text-sm text-slate-700 pt-1"><input id="n-publicada" type="checkbox" checked> Publicada (visible en la web)</label>
+                    <div class="flex gap-3 pt-2">
+                        <button id="n-guardar" class="btn">Guardar noticia</button>
+                        <button id="n-cancelar" class="btn-sec hidden">Cancelar</button>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Noticias cargadas</h2>
+                    <ul id="lista-noticias" class="divide-y divide-slate-200 border border-slate-200"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMUNICADOS -->
+        <section id="tab-comunicados" class="hidden">
+            <div class="grid md:grid-cols-[360px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 id="comunicado-titulo" class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Nuevo comunicado</h2>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="co-numero">Número</label><input id="co-numero" class="campo" placeholder="012/2026"></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="co-cat">Origen</label>
+                        <select id="co-cat" class="campo">
+                            <option>CONSEJO DIRECTIVO</option><option>TRIBUNAL DE DISCIPLINA</option><option>SECRETARÍA</option><option>ARBITRAJE</option><option>TESORERÍA</option>
+                        </select>
+                    </div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="co-titulo">Título</label><input id="co-titulo" class="campo" placeholder="Sanciones de la fecha 5"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="co-fecha">Fecha de publicación</label><input id="co-fecha" type="datetime-local" class="campo"></div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="co-resumen">Resumen (opcional)</label><textarea id="co-resumen" rows="2" class="campo" placeholder="Una o dos líneas sobre qué trata"></textarea></div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="co-drive">Link del PDF en Drive</label>
+                        <input id="co-drive" class="campo" placeholder="https://drive.google.com/file/d/.../view?usp=sharing">
+                        <p class="text-xs text-slate-500 mt-1">En Drive: Compartir &gt; Acceso general: <b>Cualquier persona con el enlace</b> &gt; Copiar enlace. Pegá ese link acá; la web arma sola el visor y la descarga.</p>
+                    </div>
+                    <label class="flex items-center gap-2 text-sm text-slate-700 pt-1"><input id="co-publicado" type="checkbox" checked> Publicado (visible en la web)</label>
+                    <div class="flex gap-3 pt-2">
+                        <button id="co-guardar" class="btn">Guardar comunicado</button>
+                        <button id="co-cancelar" class="btn-sec hidden">Cancelar</button>
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Comunicados cargados</h2>
+                    <ul id="lista-comunicados" class="divide-y divide-slate-200 border border-slate-200"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERÍA -->
+        <section id="tab-galeria" class="hidden">
+            <div class="grid md:grid-cols-[360px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Subir fotos</h2>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="g-fotos">Fotos (podés elegir varias a la vez)</label>
+                        <input id="g-fotos" type="file" accept="image/*" multiple class="campo">
+                        <div id="g-previews" class="grid grid-cols-4 gap-2 mt-2"></div>
+                    </div>
+                    <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="g-desc">Descripción (opcional, se aplica a todas)</label><input id="g-desc" class="campo" placeholder="Final del torneo Apertura"></div>
+                    <div class="flex gap-3 pt-2"><button id="g-subir" class="btn">Subir fotos</button></div>
+                    <p class="text-xs text-slate-500">Las fotos se achican solas antes de subir, así la web carga rápido. En el inicio se muestran las 8 más nuevas.</p>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Fotos cargadas</h2>
+                    <ul id="lista-galeria" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROGRAMACIÓN (texto del flyer) -->
+        <section id="tab-programacion" class="hidden">
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Programación de la semana</h2>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1" for="pr-texto">Pegá el mismo texto que usás para el flyer</label>
+                    <textarea id="pr-texto" rows="18" class="campo font-mono text-sm" placeholder="Infantiles - Sede: Avenida FC&#10;• Torneo Proyección Infantiles – Martes 20/10 – 18:30 Hs&#10;1ra y Sub 20&#10;Zona Sur - Fecha 7&#10;• Camping FC Vs. Dep. Argentino – Miércoles 21/10 – 20:00 Hs"></textarea>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <button id="pr-guardar" class="btn">Publicar en la web</button>
+                        <button id="pr-quitar" class="btn-sec">Quitar programación</button>
+                    </div>
+                    <p id="pr-info" class="text-xs text-slate-500"></p>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Así lo entiende la web</h2>
+                    <div id="pr-resumen" class="text-sm space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANNER -->
+        <section id="tab-banner" class="hidden">
+            <div class="grid md:grid-cols-[360px_1fr] gap-10">
+                <div class="space-y-3 bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste">Banner principal</h2>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="b-imagen">Nueva imagen</label>
+                        <input id="b-imagen" type="file" accept="image/*" class="campo">
+                        <img id="b-preview" class="hidden w-full max-h-40 object-cover mt-2" alt="Vista previa del nuevo banner">
+                    </div>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <button id="b-guardar" class="btn">Guardar banner</button>
+                        <button id="b-restaurar" class="btn-sec hidden">Volver a la imagen por defecto</button>
+                    </div>
+                    <p class="text-xs text-slate-500">Usá una foto horizontal (por ejemplo 1600 × 1067 px) con lo importante en el centro: en el celular se recorta un poco los costados. Se achica sola antes de subir.</p>
+                </div>
+                <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Banner actual</h2>
+                    <p id="b-origen" class="text-xs text-slate-500 mb-3"></p>
+                    <img id="b-actual" class="w-full max-h-72 object-cover border border-slate-200 bg-slate-100" alt="Banner actual de la web">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import {
+            onSesion, esAdmin, logout,
+            listarClubes, guardarClub, eliminarClub,
+            listarPartidos, guardarPartido, eliminarPartido,
+            listarNoticias, guardarNoticia, eliminarNoticia,
+            listarComunicados, guardarComunicado, eliminarComunicado, extraerDriveId,
+            listarGaleria, guardarFoto, eliminarFoto,
+            obtenerConfigHome, guardarConfigHome,
+            obtenerProgramacion, guardarProgramacion
+        } from './firebase.js';
+        import { subirImagen, optimizar, reducir } from './cloudinary.js';
+        import { parsearProgramacion, resumir } from './programacion.js';
+
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        let avisoT;
+        const aviso = (msg, error = false) => {
+            const e = $('estado');
+            clearTimeout(avisoT);
+            e.textContent = msg;
+            e.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[92vw] bg-white border border-slate-200 border-l-4 shadow-lg px-5 py-3 text-sm font-semibold ' + (error ? 'border-l-red-500 text-red-700' : 'border-l-afochCeleste text-afochAzul');
+            if (!msg.endsWith('...')) avisoT = setTimeout(() => e.classList.add('hidden'), error ? 8000 : 5000);
+        };
+        const aInputFecha = d => {
+            const p = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+        };
+        const fmtFecha = d => d.toLocaleString('es-AR', { weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' });
+
+        let clubes = [], partidos = [], clubEdit = null, partidoEdit = null;
+
+        /* ---- sesión ---- */
+        $('salir').addEventListener('click', async () => { await logout(); location.href = 'login.html'; });
+        onSesion(async user => {
+            if (!user || !(await esAdmin(user))) { await logout(); location.href = 'login.html'; return; }
+            await recargarClubes();
+            await recargarPartidos();
+            await recargarNoticias();
+            await recargarComunicados();
+            await recargarGaleria();
+            await recargarBanner();
+            await recargarProgramacion();
+        });
+
+        /* ---- tabs ---- */
+        document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(x => x.setAttribute('aria-selected', x === t));
+            ['clubes', 'partidos', 'programacion', 'noticias', 'comunicados', 'galeria', 'banner'].forEach(n => $('tab-' + n).classList.toggle('hidden', n !== t.dataset.tab));
+        }));
+
+        /* ---- programación (texto) ---- */
+        function vistaProgramacion() {
+            const r = resumir(parsearProgramacion($('pr-texto').value));
+            if (!r.total) { $('pr-resumen').innerHTML = '<p class="text-slate-500">Todavía no hay partidos reconocidos.</p>'; return; }
+            const avisos = [r.sinFecha && `${r.sinFecha} sin fecha`, r.sinHora && `${r.sinHora} sin horario`].filter(Boolean);
+            $('pr-resumen').innerHTML = `
+                <p><strong>${r.total}</strong> partidos en <strong>${r.dias.length}</strong> ${r.dias.length === 1 ? 'día' : 'días'}.</p>
+                ${avisos.length ? `<p class="text-amber-700">Ojo: ${avisos.join(' y ')}.</p>` : ''}
+                <ul class="divide-y divide-slate-200 border border-slate-200">${r.dias.map(d => `<li class="flex justify-between p-2"><span class="capitalize">${esc(d.etiqueta)}</span><span class="text-slate-500">${d.n}</span></li>`).join('')}</ul>
+                <p class="text-xs text-slate-500">Categorías: ${r.categorias.map(esc).join(', ') || '—'}</p>`;
+        }
+        async function recargarProgramacion() {
+            const c = await obtenerProgramacion();
+            $('pr-texto').value = c?.texto || '';
+            $('pr-info').textContent = c?.actualizado?.toDate ? 'Publicada el ' + fmtFecha(c.actualizado.toDate()) : 'Todavía no publicaste ninguna programación.';
+            vistaProgramacion();
+        }
+        $('pr-texto').addEventListener('input', vistaProgramacion);
+        $('pr-guardar').addEventListener('click', async () => {
+            if (!$('pr-texto').value.trim()) { aviso('Pegá la programación antes de publicar.', true); return; }
+            try { await guardarProgramacion($('pr-texto').value); aviso('Programación publicada.'); await recargarProgramacion(); }
+            catch (e) { console.error(e); aviso('No se pudo publicar la programación.', true); }
+        });
+        $('pr-quitar').addEventListener('click', async () => {
+            if (!confirm('¿Quitar la programación de la web? Volverá a verse la lista de partidos cargados a mano.')) return;
+            try { await guardarProgramacion(''); aviso('Programación quitada.'); await recargarProgramacion(); }
+            catch (e) { console.error(e); aviso('No se pudo quitar la programación.', true); }
+        });
+
+        /* ---- clubes ---- */
+        async function recargarClubes() {
+            clubes = await listarClubes();
+            $('lista-clubes').innerHTML = clubes.length ? clubes.map(c => `
+                <li class="flex flex-wrap items-center gap-x-4 gap-y-2 p-3">
+                    ${c.escudoUrl ? `<img src="${esc(optimizar(c.escudoUrl, 80))}" class="w-10 h-10 object-contain" alt="">` : '<div class="w-10 h-10 bg-slate-100"></div>'}
+                    <div class="flex-1 min-w-[10rem]"><div class="font-semibold text-afochAzul">${esc(c.nombre)}</div><div class="text-xs text-slate-500">${esc(c.nombreCorto)}</div></div>
+                    <button data-edit-club="${c.id}" class="text-sm font-semibold text-afochMedio hover:underline">Editar</button>
+                    <button data-del-club="${c.id}" class="text-sm font-semibold text-red-600 hover:underline">Eliminar</button>
+                </li>`).join('') : '<li class="p-4 text-sm text-slate-500">Todavía no cargaste clubes. Empezá con el formulario de la izquierda.</li>';
+            const opciones = clubes.map(c => `<option value="${c.id}">${esc(c.nombreCorto || c.nombre)}</option>`).join('');
+            $('p-local').innerHTML = opciones;
+            $('p-visit').innerHTML = opciones;
+        }
+
+        function limpiarClub() {
+            clubEdit = null;
+            ['c-nombre', 'c-corto', 'c-escudo'].forEach(i => $(i).value = '');
+            $('c-preview').classList.add('hidden');
+            $('club-titulo').textContent = 'Nuevo club';
+            $('c-cancelar').classList.add('hidden');
+        }
+
+        $('c-escudo').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (f) { $('c-preview').src = URL.createObjectURL(f); $('c-preview').classList.remove('hidden'); }
+        });
+        $('c-cancelar').addEventListener('click', limpiarClub);
+
+        $('c-guardar').addEventListener('click', async () => {
+            const nombre = $('c-nombre').value.trim();
+            if (!nombre) return aviso('Escribí el nombre del club.', true);
+            try {
+                aviso('Guardando club...');
+                const data = { nombre, nombreCorto: $('c-corto').value.trim() || nombre };
+                const archivo = $('c-escudo').files[0];
+                if (archivo) {
+                    const { url, publicId } = await subirImagen(archivo, 'afoch/escudos');
+                    data.escudoUrl = url; data.escudoPublicId = publicId;
+                }
+                await guardarClub(clubEdit, data);
+                limpiarClub();
+                await recargarClubes();
+                aviso('Club guardado.');
+            } catch (e) { console.error(e); aviso('No se pudo guardar el club: ' + e.message, true); }
+        });
+
+        $('lista-clubes').addEventListener('click', async e => {
+            const ed = e.target.dataset.editClub, del = e.target.dataset.delClub;
+            if (ed) {
+                const c = clubes.find(x => x.id === ed);
+                clubEdit = ed;
+                $('c-nombre').value = c.nombre; $('c-corto').value = c.nombreCorto || '';
+                if (c.escudoUrl) { $('c-preview').src = optimizar(c.escudoUrl, 160); $('c-preview').classList.remove('hidden'); }
+                $('club-titulo').textContent = 'Editar club';
+                $('c-cancelar').classList.remove('hidden');
+            }
+            if (del && confirm('¿Eliminar este club? Los partidos ya cargados conservan su nombre.')) {
+                await eliminarClub(del); await recargarClubes(); aviso('Club eliminado.');
+            }
+        });
+
+        /* ---- partidos ---- */
+        async function recargarPartidos() {
+            partidos = await listarPartidos();
+            $('lista-partidos').innerHTML = partidos.length ? partidos.map(p => `
+                <li class="p-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <div class="flex-1 min-w-[10rem]">
+                        <div class="font-semibold text-afochAzul">${esc(p.localNombre)} vs ${esc(p.visitanteNombre)}</div>
+                        <div class="text-xs text-slate-500">${esc(fmtFecha(p.fecha))} · ${esc(p.estadio || 'Sin estadio')} · ${esc(p.torneo || '')} · ${esc(p.estado)}</div>
+                    </div>
+                    <button data-edit-partido="${p.id}" class="text-sm font-semibold text-afochMedio hover:underline">Editar</button>
+                    <button data-del-partido="${p.id}" class="text-sm font-semibold text-red-600 hover:underline">Eliminar</button>
+                </li>`).join('') : '<li class="p-4 text-sm text-slate-500">No hay partidos cargados. Cargá el primero con el formulario.</li>';
+        }
+
+        function limpiarPartido() {
+            partidoEdit = null;
+            ['p-torneo', 'p-fecha', 'p-estadio'].forEach(i => $(i).value = '');
+            $('p-estado').value = 'programado';
+            $('partido-titulo').textContent = 'Nuevo partido';
+            $('p-cancelar').classList.add('hidden');
+        }
+        $('p-cancelar').addEventListener('click', limpiarPartido);
+
+        $('p-guardar').addEventListener('click', async () => {
+            const local = clubes.find(c => c.id === $('p-local').value);
+            const visit = clubes.find(c => c.id === $('p-visit').value);
+            if (!local || !visit) return aviso('Cargá primero los clubes.', true);
+            if (local.id === visit.id) return aviso('El local y el visitante no pueden ser el mismo club.', true);
+            if (!$('p-fecha').value) return aviso('Elegí fecha y hora del partido.', true);
+            try {
+                aviso('Guardando partido...');
+                await guardarPartido(partidoEdit, {
+                    torneo: $('p-torneo').value.trim(),
+                    localId: local.id, localNombre: local.nombreCorto || local.nombre, localEscudo: local.escudoUrl || '',
+                    visitanteId: visit.id, visitanteNombre: visit.nombreCorto || visit.nombre, visitanteEscudo: visit.escudoUrl || '',
+                    fecha: new Date($('p-fecha').value),
+                    estadio: $('p-estadio').value.trim(),
+                    estado: $('p-estado').value
+                });
+                limpiarPartido();
+                await recargarPartidos();
+                aviso('Partido guardado.');
+            } catch (e) { console.error(e); aviso('No se pudo guardar el partido: ' + e.message, true); }
+        });
+
+        $('lista-partidos').addEventListener('click', async e => {
+            const ed = e.target.dataset.editPartido, del = e.target.dataset.delPartido;
+            if (ed) {
+                const p = partidos.find(x => x.id === ed);
+                partidoEdit = ed;
+                $('p-torneo').value = p.torneo || ''; $('p-local').value = p.localId; $('p-visit').value = p.visitanteId;
+                $('p-fecha').value = aInputFecha(p.fecha); $('p-estadio').value = p.estadio || ''; $('p-estado').value = p.estado;
+                $('partido-titulo').textContent = 'Editar partido';
+                $('p-cancelar').classList.remove('hidden');
+            }
+            if (del && confirm('¿Eliminar este partido?')) {
+                await eliminarPartido(del); await recargarPartidos(); aviso('Partido eliminado.');
+            }
+        });
+
+        /* ---- noticias ---- */
+        let noticias = [], noticiaEdit = null;
+
+        async function recargarNoticias() {
+            noticias = await listarNoticias(100, false);
+            $('lista-noticias').innerHTML = noticias.length ? noticias.map(n => `
+                <li class="p-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    ${n.imagenUrl ? `<img src="${esc(optimizar(n.imagenUrl, 120))}" class="w-16 h-12 object-cover" alt="">` : '<div class="w-16 h-12 bg-slate-100"></div>'}
+                    <div class="flex-1 min-w-[10rem]">
+                        <div class="font-semibold text-afochAzul">${esc(n.titulo)}</div>
+                        <div class="text-xs text-slate-500">${esc(fmtFecha(n.fecha))} · ${esc(n.categoria || '')} · ${n.publicada === false ? '<span class="text-amber-600">Borrador</span>' : 'Publicada'}</div>
+                    </div>
+                    <button data-edit-noticia="${n.id}" class="text-sm font-semibold text-afochMedio hover:underline">Editar</button>
+                    <button data-del-noticia="${n.id}" class="text-sm font-semibold text-red-600 hover:underline">Eliminar</button>
+                </li>`).join('') : '<li class="p-4 text-sm text-slate-500">Todavía no hay noticias. Cargá la primera con el formulario.</li>';
+        }
+
+        function limpiarNoticia() {
+            noticiaEdit = null;
+            ['n-titulo', 'n-resumen', 'n-contenido', 'n-imagen'].forEach(i => $(i).value = '');
+            $('n-fecha').value = aInputFecha(new Date());
+            $('n-cat').selectedIndex = 0;
+            $('n-publicada').checked = true;
+            $('n-preview').classList.add('hidden');
+            $('noticia-titulo').textContent = 'Nueva noticia';
+            $('n-cancelar').classList.add('hidden');
+        }
+        limpiarNoticia();
+
+        $('n-imagen').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (f) { $('n-preview').src = URL.createObjectURL(f); $('n-preview').classList.remove('hidden'); }
+        });
+        $('n-cancelar').addEventListener('click', limpiarNoticia);
+
+        $('n-guardar').addEventListener('click', async () => {
+            const titulo = $('n-titulo').value.trim();
+            if (!titulo) return aviso('Escribí el título de la noticia.', true);
+            if (!$('n-contenido').value.trim()) return aviso('Escribí el contenido de la noticia.', true);
+            if (!$('n-fecha').value) return aviso('Elegí la fecha de publicación.', true);
+            try {
+                aviso('Guardando noticia...');
+                const data = {
+                    titulo,
+                    categoria: $('n-cat').value,
+                    resumen: $('n-resumen').value.trim(),
+                    contenido: $('n-contenido').value.trim(),
+                    publicada: $('n-publicada').checked,
+                    fecha: new Date($('n-fecha').value)
+                };
+                const archivo = $('n-imagen').files[0];
+                if (archivo) {
+                    aviso('Subiendo imagen...');
+                    const { url, publicId } = await subirImagen(archivo, 'afoch/noticias');
+                    data.imagenUrl = url; data.imagenPublicId = publicId;
+                }
+                await guardarNoticia(noticiaEdit, data);
+                limpiarNoticia();
+                await recargarNoticias();
+                aviso('Noticia guardada.');
+            } catch (e) { console.error(e); aviso('No se pudo guardar la noticia: ' + e.message, true); }
+        });
+
+        $('lista-noticias').addEventListener('click', async e => {
+            const ed = e.target.dataset.editNoticia, del = e.target.dataset.delNoticia;
+            if (ed) {
+                const n = noticias.find(x => x.id === ed);
+                noticiaEdit = ed;
+                $('n-titulo').value = n.titulo || ''; $('n-cat').value = n.categoria || 'INSTITUCIONAL';
+                $('n-fecha').value = aInputFecha(n.fecha); $('n-resumen').value = n.resumen || '';
+                $('n-contenido').value = n.contenido || ''; $('n-publicada').checked = n.publicada !== false;
+                $('n-imagen').value = '';
+                if (n.imagenUrl) { $('n-preview').src = optimizar(n.imagenUrl, 600); $('n-preview').classList.remove('hidden'); }
+                else $('n-preview').classList.add('hidden');
+                $('noticia-titulo').textContent = 'Editar noticia';
+                $('n-cancelar').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            if (del && confirm('¿Eliminar esta noticia?')) {
+                await eliminarNoticia(del); await recargarNoticias(); aviso('Noticia eliminada.');
+            }
+        });
+
+        /* ---- comunicados ---- */
+        let comunicados = [], comunicadoEdit = null;
+
+        async function recargarComunicados() {
+            comunicados = await listarComunicados(100, false);
+            $('lista-comunicados').innerHTML = comunicados.length ? comunicados.map(c => `
+                <li class="p-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <div class="flex-1 min-w-[10rem]">
+                        <div class="font-semibold text-afochAzul">N° ${esc(c.numero)} · ${esc(c.titulo)}</div>
+                        <div class="text-xs text-slate-500">${esc(fmtFecha(c.fecha))} · ${esc(c.categoria || '')} · ${c.publicado === false ? '<span class="text-amber-600">Borrador</span>' : 'Publicado'}</div>
+                    </div>
+                    <a href="${esc(c.driveUrl)}" target="_blank" rel="noopener" class="text-sm font-semibold text-slate-600 hover:text-afochMedio">Ver PDF</a>
+                    <button data-edit-comunicado="${c.id}" class="text-sm font-semibold text-afochMedio hover:underline">Editar</button>
+                    <button data-del-comunicado="${c.id}" class="text-sm font-semibold text-red-600 hover:underline">Eliminar</button>
+                </li>`).join('') : '<li class="p-4 text-sm text-slate-500">Todavía no hay comunicados. Cargá el primero con el formulario.</li>';
+        }
+
+        function limpiarComunicado() {
+            comunicadoEdit = null;
+            ['co-numero', 'co-titulo', 'co-resumen', 'co-drive'].forEach(i => $(i).value = '');
+            $('co-fecha').value = aInputFecha(new Date());
+            $('co-cat').selectedIndex = 0;
+            $('co-publicado').checked = true;
+            $('comunicado-titulo').textContent = 'Nuevo comunicado';
+            $('co-cancelar').classList.add('hidden');
+        }
+        limpiarComunicado();
+        $('co-cancelar').addEventListener('click', limpiarComunicado);
+
+        $('co-guardar').addEventListener('click', async () => {
+            const titulo = $('co-titulo').value.trim();
+            const numero = $('co-numero').value.trim();
+            const driveUrl = $('co-drive').value.trim();
+            if (!numero) return aviso('Escribí el número del comunicado.', true);
+            if (!titulo) return aviso('Escribí el título del comunicado.', true);
+            if (!$('co-fecha').value) return aviso('Elegí la fecha de publicación.', true);
+            if (!extraerDriveId(driveUrl)) return aviso('El link no parece ser de un archivo de Drive. Copialo con Compartir > Copiar enlace.', true);
+            try {
+                aviso('Guardando comunicado...');
+                await guardarComunicado(comunicadoEdit, {
+                    numero, titulo, driveUrl,
+                    categoria: $('co-cat').value,
+                    resumen: $('co-resumen').value.trim(),
+                    publicado: $('co-publicado').checked,
+                    fecha: new Date($('co-fecha').value)
+                });
+                limpiarComunicado();
+                await recargarComunicados();
+                aviso('Comunicado guardado.');
+            } catch (e) { console.error(e); aviso('No se pudo guardar el comunicado: ' + e.message, true); }
+        });
+
+        $('lista-comunicados').addEventListener('click', async e => {
+            const ed = e.target.dataset.editComunicado, del = e.target.dataset.delComunicado;
+            if (ed) {
+                const c = comunicados.find(x => x.id === ed);
+                comunicadoEdit = ed;
+                $('co-numero').value = c.numero || ''; $('co-cat').value = c.categoria || 'CONSEJO DIRECTIVO';
+                $('co-titulo').value = c.titulo || ''; $('co-fecha').value = aInputFecha(c.fecha);
+                $('co-resumen').value = c.resumen || ''; $('co-drive').value = c.driveUrl || '';
+                $('co-publicado').checked = c.publicado !== false;
+                $('comunicado-titulo').textContent = 'Editar comunicado';
+                $('co-cancelar').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            if (del && confirm('¿Eliminar este comunicado? El PDF de Drive no se borra.')) {
+                await eliminarComunicado(del); await recargarComunicados(); aviso('Comunicado eliminado.');
+            }
+        });
+
+        /* ---- galería ---- */
+        let fotos = [];
+
+        async function recargarGaleria() {
+            fotos = await listarGaleria(200, false);
+            $('lista-galeria').innerHTML = fotos.length ? fotos.map(f => `
+                <li class="bg-white border border-slate-200 ${f.visible === false ? 'opacity-50' : ''}">
+                    <img src="${esc(optimizar(f.imagenUrl, 400))}" class="w-full aspect-square object-cover" alt="${esc(f.descripcion || '')}" loading="lazy">
+                    <div class="p-2 text-xs">
+                        <div class="text-slate-500 truncate">${esc(f.descripcion || 'Sin descripción')}${f.visible === false ? ' · <span class="text-amber-600">Oculta</span>' : ''}</div>
+                        <div class="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+                            <button data-vis-foto="${f.id}" class="font-semibold text-afochMedio hover:underline">${f.visible === false ? 'Mostrar' : 'Ocultar'}</button>
+                            <button data-desc-foto="${f.id}" class="font-semibold text-afochMedio hover:underline">Descripción</button>
+                            <button data-del-foto="${f.id}" class="font-semibold text-red-600 hover:underline">Eliminar</button>
+                        </div>
+                    </div>
+                </li>`).join('') : '<li class="col-span-full p-4 text-sm text-slate-500 border border-slate-200">Todavía no subiste fotos. Elegí algunas con el formulario.</li>';
+        }
+
+        $('g-fotos').addEventListener('change', e => {
+            $('g-previews').innerHTML = [...e.target.files].slice(0, 12).map(f => `<img src="${URL.createObjectURL(f)}" class="w-full aspect-square object-cover" alt="">`).join('');
+        });
+
+        $('g-subir').addEventListener('click', async () => {
+            const archivos = [...$('g-fotos').files];
+            if (!archivos.length) return aviso('Elegí al menos una foto.', true);
+            const descripcion = $('g-desc').value.trim();
+            const base = Date.now();
+            let ok = 0;
+            $('g-subir').disabled = true;
+            for (const [i, archivo] of archivos.entries()) {
+                try {
+                    aviso(`Subiendo foto ${i + 1} de ${archivos.length}...`);
+                    const { url, publicId } = await subirImagen(await reducir(archivo), 'afoch/galeria');
+                    await guardarFoto(null, { imagenUrl: url, imagenPublicId: publicId, descripcion, fecha: new Date(base - i * 1000) });
+                    ok++;
+                } catch (e) { console.error(e); }
+            }
+            $('g-subir').disabled = false;
+            $('g-fotos').value = ''; $('g-previews').innerHTML = ''; $('g-desc').value = '';
+            await recargarGaleria();
+            ok === archivos.length ? aviso(ok === 1 ? 'Foto subida.' : `${ok} fotos subidas.`) : aviso(`Se subieron ${ok} de ${archivos.length}. Volvé a intentar con las que faltan.`, true);
+        });
+
+        $('lista-galeria').addEventListener('click', async e => {
+            const vis = e.target.dataset.visFoto, desc = e.target.dataset.descFoto, del = e.target.dataset.delFoto;
+            try {
+                if (vis) {
+                    const f = fotos.find(x => x.id === vis);
+                    await guardarFoto(vis, { visible: f.visible === false });
+                    await recargarGaleria(); aviso(f.visible === false ? 'Foto visible en la web.' : 'Foto oculta de la web.');
+                }
+                if (desc) {
+                    const nueva = prompt('Descripción de la foto:', fotos.find(x => x.id === desc).descripcion || '');
+                    if (nueva !== null) { await guardarFoto(desc, { descripcion: nueva.trim() }); await recargarGaleria(); aviso('Descripción guardada.'); }
+                }
+                if (del && confirm('¿Eliminar esta foto de la galería? Deja de verse en la web.')) {
+                    await eliminarFoto(del); await recargarGaleria(); aviso('Foto eliminada.');
+                }
+            } catch (err) { console.error(err); aviso('No se pudo completar la acción: ' + err.message, true); }
+        });
+
+        /* ---- banner principal ---- */
+        const BANNER_DEFAULT = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200';
+
+        async function recargarBanner() {
+            try {
+                const c = await obtenerConfigHome();
+                const url = c?.bannerUrl || '';
+                $('b-actual').src = url ? optimizar(url, 900) : BANNER_DEFAULT;
+                $('b-origen').textContent = url ? 'Imagen personalizada' : 'Imagen por defecto';
+                $('b-restaurar').classList.toggle('hidden', !url);
+            } catch (e) { console.error(e); aviso('No se pudo leer el banner: ' + e.message, true); }
+        }
+
+        $('b-imagen').addEventListener('change', e => {
+            const f = e.target.files[0];
+            if (f) { $('b-preview').src = URL.createObjectURL(f); $('b-preview').classList.remove('hidden'); }
+        });
+
+        $('b-guardar').addEventListener('click', async () => {
+            const archivo = $('b-imagen').files[0];
+            if (!archivo) return aviso('Elegí la imagen del banner.', true);
+            try {
+                $('b-guardar').disabled = true;
+                aviso('Subiendo banner...');
+                const { url, publicId } = await subirImagen(await reducir(archivo, 2000), 'afoch/banner');
+                await guardarConfigHome({ bannerUrl: url, bannerPublicId: publicId });
+                $('b-imagen').value = ''; $('b-preview').classList.add('hidden');
+                await recargarBanner();
+                aviso('Banner actualizado. Ya se ve en la web.');
+            } catch (e) { console.error(e); aviso('No se pudo guardar el banner: ' + e.message, true); }
+            $('b-guardar').disabled = false;
+        });
+
+        $('b-restaurar').addEventListener('click', async () => {
+            if (!confirm('¿Volver a la imagen por defecto del banner?')) return;
+            try {
+                await guardarConfigHome({ bannerUrl: '', bannerPublicId: '' });
+                await recargarBanner();
+                aviso('Banner restaurado a la imagen por defecto.');
+            } catch (e) { console.error(e); aviso('No se pudo restaurar el banner: ' + e.message, true); }
+        });
+    </script>
+</body>
+</html>

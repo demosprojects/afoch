@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFOCH | Asociación de Fútbol del Oeste Chaqueño</title>
+    <meta name="description" content="Sitio oficial de la Asociación de Fútbol del Oeste Chaqueño: comunicados, programación de partidos y clubes afiliados.">
+    <link rel="icon" type="image/png" href="https://leogalazzo06.github.io/flyersliga/afoch-logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: {
+            colors: { afochAzul: '#001A3D', afochMedio: '#0B5FA5', afochCeleste: '#00D1FF', afochClaro: '#F3F6FA' },
+            fontFamily: { sports: ['Oswald', 'sans-serif'], sans: ['Inter', 'sans-serif'] }
+        } } }
+    </script>
+</head>
+<body class="font-sans bg-afochClaro text-slate-800">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="container mx-auto px-6 h-14 md:h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="https://leogalazzo06.github.io/flyersliga/afoch-logo.png" alt="Escudo de AFOCH" class="h-10 w-auto object-contain">
+                <span class="leading-tight">
+                    <span class="block font-sports text-xl text-afochAzul tracking-wide">AFOCH</span>
+                    <span class="hidden sm:block text-[11px] text-slate-500">Asociación de Fútbol del Oeste Chaqueño</span>
+                </span>
+            </a>
+            <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600" aria-label="Principal">
+                <a href="index.html" class="text-afochAzul border-b-2 border-afochCeleste py-5">Inicio</a>
+                <a href="torneos.html" class="hover:text-afochMedio py-5">Torneos</a>
+                <a href="noticias.html" class="hover:text-afochMedio py-5">Noticias</a>
+                <a href="clubes.html" class="hover:text-afochMedio py-5">Clubes</a>
+                <a href="comunicados.html" class="hover:text-afochMedio py-5">Comunicados</a>
+            </nav>
+        </div>
+        <nav class="md:hidden border-t border-slate-100" aria-label="Principal móvil">
+            <div class="grid grid-cols-5 text-center text-[12px] tracking-tight font-semibold text-slate-600">
+                <a href="index.html" class="py-3 border-b-2 text-afochAzul border-afochCeleste">Inicio</a><a href="torneos.html" class="py-3 border-b-2 border-transparent">Torneos</a><a href="noticias.html" class="py-3 border-b-2 border-transparent">Noticias</a><a href="clubes.html" class="py-3 border-b-2 border-transparent">Clubes</a><a href="comunicados.html" class="py-3 border-b-2 border-transparent">Comunicados</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="bg-white border-b border-slate-200">
+        <div class="container mx-auto px-6 py-10 md:py-14 grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="flex items-center gap-3 mb-5">
+                    <span class="w-10 h-1 bg-afochCeleste"></span>
+                    <span class="text-xs font-semibold tracking-widest uppercase text-afochMedio">Temporada 2026</span>
+                </div>
+                <h1 class="font-sports uppercase text-4xl md:text-6xl leading-[1.05] text-afochAzul">Fútbol del<br>Oeste Chaqueño</h1>
+                <p class="mt-5 text-slate-600 max-w-lg text-lg">Información oficial de la Asociación: comunicados, programación de partidos y clubes afiliados.</p>
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="comunicados.html" class="bg-afochAzul text-white font-semibold px-6 py-3 flex-1 sm:flex-none text-center hover:bg-afochMedio transition">Ver comunicados</a>
+                    <a href="torneos.html" class="border border-afochAzul text-afochAzul font-semibold px-6 py-3 flex-1 sm:flex-none text-center hover:bg-afochAzul hover:text-white transition">Torneos y fixture</a>
+                </div>
+            </div>
+            <div class="relative bg-slate-200">
+                <div class="absolute -bottom-4 -right-4 w-full h-full border-2 border-afochCeleste/60" aria-hidden="true"></div>
+                <img id="banner-principal" class="relative w-full h-[220px] sm:h-[340px] md:h-[400px] object-cover opacity-0 transition-opacity duration-500" alt="Banner de la Asociación de Fútbol del Oeste Chaqueño">
+            </div>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 py-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="comunicados.html" class="bg-white border border-slate-200 p-5 hover:border-afochMedio hover:shadow-sm transition"><span class="block font-sports uppercase text-lg text-afochAzul">Comunicados</span><span class="text-sm text-slate-500">Documentos oficiales</span></a>
+            <a href="torneos.html" class="bg-white border border-slate-200 p-5 hover:border-afochMedio hover:shadow-sm transition"><span class="block font-sports uppercase text-lg text-afochAzul">Torneos</span><span class="text-sm text-slate-500">Programación y resultados</span></a>
+            <a href="clubes.html" class="bg-white border border-slate-200 p-5 hover:border-afochMedio hover:shadow-sm transition"><span class="block font-sports uppercase text-lg text-afochAzul">Clubes</span><span class="text-sm text-slate-500">Instituciones afiliadas</span></a>
+            <a href="noticias.html" class="bg-white border border-slate-200 p-5 hover:border-afochMedio hover:shadow-sm transition"><span class="block font-sports uppercase text-lg text-afochAzul">Noticias</span><span class="text-sm text-slate-500">Novedades de la liga</span></a>
+        </div>
+    </section>
+
+    <section class="container mx-auto px-6 pb-10 md:pb-14">
+        <div class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-white border border-slate-200 p-4 sm:p-6">
+                <div class="flex items-baseline justify-between mb-6 pb-3 border-b-2 border-afochCeleste">
+                    <h2 class="font-sports uppercase text-2xl text-afochAzul">Próximos encuentros</h2>
+                    <a href="torneos.html" class="text-sm font-semibold text-afochMedio hover:underline">Ver torneos</a>
+                </div>
+                <div id="contenedor-partidos" class="space-y-3"></div>
+            </div>
+            <div class="bg-white border border-slate-200 p-4 sm:p-6">
+                <div class="flex items-baseline justify-between mb-6 pb-3 border-b-2 border-afochCeleste">
+                    <h2 class="font-sports uppercase text-2xl text-afochAzul">Últimos comunicados</h2>
+                    <a href="comunicados.html" class="text-sm font-semibold text-afochMedio hover:underline">Ver todos</a>
+                </div>
+                <div id="contenedor-comunicados-home" class="divide-y divide-slate-200"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="seccion-noticias" class="bg-white border-y border-slate-200 py-10 md:py-14 hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex items-baseline justify-between mb-8 pb-3 border-b-2 border-afochCeleste">
+                <h2 class="font-sports uppercase text-2xl text-afochAzul">Últimas novedades</h2>
+                <a href="noticias.html" class="text-sm font-semibold text-afochMedio hover:underline">Ver todas</a>
+            </div>
+            <div id="contenedor-noticias" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </div>
+    </section>
+
+    <section id="seccion-galeria" class="container mx-auto px-6 py-10 md:py-14">
+        <h2 class="font-sports uppercase text-2xl text-afochAzul mb-8 pb-3 border-b-2 border-afochCeleste">Galería</h2>
+        <div id="contenedor-galeria" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+    </section>
+
+    <section class="bg-white border-t border-slate-200 py-10 md:py-14">
+        <div class="container mx-auto px-6">
+            <h2 class="font-sports uppercase text-2xl text-afochAzul mb-8 pb-3 border-b-2 border-afochCeleste">Clubes afiliados</h2>
+            <div id="grid-clubes-footer" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-6"></div>
+        </div>
+    </section>
+
+    <footer class="bg-afochAzul text-white">
+        <div class="container mx-auto px-6 py-10 md:py-12 grid md:grid-cols-3 gap-10">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-12 h-12 bg-white p-1 flex items-center justify-center shrink-0"><img src="https://leogalazzo06.github.io/flyersliga/afoch-logo.png" alt="Escudo de AFOCH" class="max-w-full max-h-full object-contain"></span>
+                    <span class="font-sports text-xl tracking-wide">AFOCH</span>
+                </div>
+                <p class="text-sm text-white/70 max-w-xs">Asociación de Fútbol del Oeste Chaqueño. Villa Ángela, Chaco, Argentina.</p>
+            </div>
+            <div>
+                <h3 class="font-sports uppercase tracking-wide mb-4">Secciones</h3>
+                <ul class="space-y-3 text-sm text-white/70">
+                    <li><a href="torneos.html" class="hover:text-white">Torneos</a></li>
+                    <li><a href="noticias.html" class="hover:text-white">Noticias</a></li>
+                    <li><a href="clubes.html" class="hover:text-white">Clubes</a></li>
+                    <li><a href="comunicados.html" class="hover:text-white">Comunicados</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-sports uppercase tracking-wide mb-4">Seguinos</h3>
+                <div class="flex gap-5 text-white/70">
+                    <a href="#" aria-label="Instagram" class="hover:text-white"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                    <a href="#" aria-label="Facebook" class="hover:text-white"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                    <a href="#" aria-label="X" class="hover:text-white"><svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10">
+            <div class="container mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-white/50">
+                <p>© 2026 Asociación de Fútbol del Oeste Chaqueño. Todos los derechos reservados.</p>
+                <a href="login.html" class="hover:text-white">Acceso administrativo</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="home.js"></script>
+</body>
+</html>
