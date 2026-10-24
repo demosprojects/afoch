@@ -15,18 +15,18 @@
     <div id="site-header"></div>
     <div id="page-banner" data-titulo="Comunicados" data-bajada="Comunicados oficiales del Tribunal de Disciplina, Consejo Directivo y Secretaría."></div>
 
-    <main class="container mx-auto px-6 py-6 md:py-10 flex-1">
-        <div id="contenedor-comunicados" class="space-y-4 max-w-4xl"></div>
+    <main class="container mx-auto px-4 sm:px-6 py-6 md:py-10 flex-1">
+        <div id="contenedor-comunicados" class="space-y-3 sm:space-y-4 max-w-4xl"></div>
     </main>
 
     <dialog id="visor" class="bg-white text-slate-800 border border-slate-300 w-full h-[100dvh] max-w-none max-h-none sm:w-[95vw] sm:max-w-5xl sm:h-[88vh] p-0 backdrop:bg-black/60">
         <div class="flex flex-col h-full">
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-0 px-4 py-3 border-b border-slate-200">
-                <h2 id="visor-titulo" class="flex-1 min-w-[12rem] font-sports uppercase text-base sm:text-lg text-afochAzul leading-tight"></h2>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 border-b border-slate-200">
+                <h2 id="visor-titulo" class="basis-full sm:basis-0 sm:flex-1 sm:min-w-[12rem] font-sports uppercase text-base sm:text-lg text-afochAzul leading-tight break-words line-clamp-2"></h2>
                 <button id="visor-copiar" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio">Copiar link</button>
                 <a id="visor-descarga" href="#" target="_blank" rel="noopener" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio">Descargar</a>
                 <a id="visor-drive" href="#" target="_blank" rel="noopener" class="inline-block py-2 text-xs text-slate-500 hover:text-afochMedio">Abrir en Drive</a>
-                <button id="visor-cerrar" class="inline-block py-2 text-xs font-semibold text-slate-600 hover:text-afochMedio" aria-label="Cerrar visor">Cerrar ✕</button>
+                <button id="visor-cerrar" class="inline-block py-2 ml-auto text-xs font-semibold text-slate-600 hover:text-afochMedio" aria-label="Cerrar visor">Cerrar ✕</button>
             </div>
             <div class="relative flex-1">
                 <div id="visor-cargando" class="absolute inset-0 z-10 bg-white flex items-center justify-center"></div>
@@ -69,11 +69,14 @@
                     ? `<a href="comunicados.html?id=${encodeURIComponent(c.id)}" data-ver="${esc(c.id)}" class="hover:text-afochMedio transition">${esc(c.titulo)}</a>`
                     : esc(c.titulo);
                 return `
-            <article ${conPdf ? `data-ver="${esc(c.id)}"` : ''} class="group bg-white border border-slate-200 border-l-4 border-l-afochCeleste hover:shadow-md p-6 transition ${conPdf ? 'cursor-pointer' : ''}">
-                <div class="flex justify-between text-[11px] font-semibold tracking-wide uppercase text-afochMedio mb-2"><span>${esc(c.categoria)} · N° ${esc(c.numero)}</span><span>${esc(fmt(c.fecha))}</span></div>
-                <h3 class="font-sports uppercase text-xl text-afochAzul leading-snug">${titulo}</h3>
-                ${c.resumen ? `<p class="text-slate-600 text-sm mt-2">${esc(c.resumen)}</p>` : ''}
-                ${conPdf ? '<span class="inline-block mt-4 text-xs font-semibold text-slate-500 group-hover:text-afochMedio transition">Ver PDF →</span>' : ''}
+            <article ${conPdf ? `data-ver="${esc(c.id)}"` : ''} class="group min-w-0 bg-white border border-slate-200 border-l-4 border-l-afochCeleste hover:shadow-md p-4 sm:p-6 transition ${conPdf ? 'cursor-pointer' : ''}">
+                <div class="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4 text-[11px] font-semibold tracking-wide uppercase mb-2">
+                    <span class="text-afochMedio break-words">${esc(c.categoria)} · N° ${esc(c.numero)}</span>
+                    <span class="text-slate-500 font-normal shrink-0">${esc(fmt(c.fecha))}</span>
+                </div>
+                <h3 class="font-sports uppercase text-lg sm:text-xl text-afochAzul leading-snug break-words">${titulo}</h3>
+                ${c.resumen ? `<p class="text-slate-600 text-sm leading-relaxed mt-2 break-words">${esc(c.resumen)}</p>` : ''}
+                ${conPdf ? '<span class="inline-block mt-3 sm:mt-4 text-xs font-semibold text-slate-500 group-hover:text-afochMedio transition">Ver PDF →</span>' : ''}
             </article>`;
             }).join('');
         }
