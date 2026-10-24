@@ -25,7 +25,7 @@ const enlacesEscritorio = NAV.map(([href, texto, id]) => id === actual
     ? `<a href="${href}" class="text-afochAzul border-b-2 border-afochCeleste py-5" aria-current="page">${texto}</a>`
     : `<a href="${href}" class="hover:text-afochMedio py-5">${texto}</a>`).join('');
 const enlacesMovil = NAV.map(([href, texto, id]) =>
-    `<a href="${href}" class="${id === actual ? 'text-afochAzul border-b-2 border-afochCeleste' : 'border-b-2 border-transparent'} py-3">${texto}</a>`).join('');
+    `<a href="${href}" class="${id === actual ? 'text-afochAzul border-b-2 border-afochCeleste' : 'border-b-2 border-transparent'} shrink-0 whitespace-nowrap px-2 py-3"${id === actual ? ' aria-current="page"' : ''}>${texto}</a>`).join('');
 
 const cabecera = document.getElementById('site-header');
 if (cabecera) cabecera.innerHTML = `
@@ -41,20 +41,45 @@ if (cabecera) cabecera.innerHTML = `
         <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600" aria-label="Principal">${enlacesEscritorio}</nav>
     </div>
     <nav class="md:hidden border-t border-slate-100" aria-label="Principal móvil">
-        <div class="grid grid-cols-5 text-center text-[12px] tracking-tight font-semibold text-slate-600">${enlacesMovil}</div>
+        <div class="flex justify-around overflow-x-auto px-2 text-center text-[12px] font-semibold text-slate-600 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">${enlacesMovil}</div>
     </nav>
 </header>`;
 
+/* Banner de título de cada página interna (mismo lenguaje visual que el hero del inicio) */
+document.head.insertAdjacentHTML('beforeend', `<style>
+@keyframes banner-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.banner-in{animation:banner-up .6s cubic-bezier(.2,.7,.2,1) both}
+.banner-d1{animation-delay:.07s}.banner-d2{animation-delay:.14s}
+@media (prefers-reduced-motion:reduce){.banner-in{animation:none}}
+</style>`);
+
 const banner = document.getElementById('page-banner');
-if (banner) banner.innerHTML = `
-<section class="bg-white border-b border-slate-200">
-    <div class="container mx-auto px-6 py-8 md:py-10">
-        <p class="text-xs text-slate-500 mb-3"><a href="index.html" class="hover:text-afochMedio">Inicio</a> / <span>${banner.dataset.migas || banner.dataset.titulo}</span></p>
-        <div class="flex items-center gap-3 mb-3"><span class="w-10 h-1 bg-afochCeleste"></span></div>
-        <h1 class="font-sports uppercase text-3xl md:text-5xl text-afochAzul leading-tight">${banner.dataset.titulo}</h1>
-        ${banner.dataset.bajada ? `<p class="mt-3 text-slate-600 max-w-2xl">${banner.dataset.bajada}</p>` : ''}
+if (banner) {
+    const titulo = banner.dataset.titulo || '';
+    const migas = banner.dataset.migas || titulo;
+    banner.innerHTML = `
+<section class="relative overflow-hidden bg-gradient-to-br from-afochAzul via-[#022a5e] to-afochMedio text-white">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(0,209,255,.25),transparent_50%)]" aria-hidden="true"></div>
+    <svg class="absolute -right-28 sm:-right-12 top-1/2 -translate-y-1/2 w-[520px] sm:w-[640px] max-w-none text-white/10 pointer-events-none" viewBox="0 0 800 520" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+        <rect x="10" y="10" width="780" height="500"/><path d="M400 10V510"/>
+        <circle cx="400" cy="260" r="80"/><circle cx="400" cy="260" r="5" fill="currentColor"/>
+        <rect x="10" y="130" width="130" height="260"/><rect x="10" y="200" width="45" height="120"/><path d="M140 220A60 60 0 0 1 140 300"/>
+        <rect x="660" y="130" width="130" height="260"/><rect x="745" y="200" width="45" height="120"/><path d="M660 220A60 60 0 0 0 660 300"/>
+    </svg>
+    <div class="absolute -left-16 bottom-0 w-40 h-[160%] bg-afochCeleste/10 -skew-x-12 origin-bottom-left" aria-hidden="true"></div>
+    <div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-afochCeleste via-afochCeleste/40 to-transparent" aria-hidden="true"></div>
+    <div class="relative container mx-auto px-6 py-8 md:py-12">
+        <nav aria-label="Ruta de navegación" class="banner-in text-xs text-white/70 mb-4 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <a href="index.html" class="hover:text-afochCeleste transition">Inicio</a>
+            <span class="text-white/40" aria-hidden="true">/</span>
+            <span class="text-white font-semibold" aria-current="page">${migas}</span>
+        </nav>
+        <div class="banner-in banner-d1 flex items-center gap-3 mb-3"><span class="w-10 h-1 bg-afochCeleste"></span></div>
+        <h1 class="banner-in banner-d1 font-sports uppercase text-3xl sm:text-4xl md:text-5xl leading-tight break-words">${titulo}</h1>
+        ${banner.dataset.bajada ? `<p class="banner-in banner-d2 mt-3 text-white/80 max-w-2xl text-sm sm:text-base leading-relaxed">${banner.dataset.bajada}</p>` : ''}
     </div>
 </section>`;
+}
 
 const pie = document.getElementById('site-footer');
 if (pie) pie.innerHTML = `
