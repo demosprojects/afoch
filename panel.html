@@ -73,6 +73,37 @@
                         <input id="c-escudo" type="file" accept="image/*" class="campo">
                         <img id="c-preview" class="hidden w-20 h-20 object-contain mt-2" alt="Vista previa del escudo">
                     </div>
+                    <details id="c-ficha" class="border border-slate-200 bg-slate-50">
+                        <summary class="cursor-pointer select-none px-3 py-2.5 text-sm font-semibold text-afochAzul">Ficha del club <span class="font-normal text-slate-500">(se ve al abrir el club en la web)</span></summary>
+                        <div class="space-y-3 p-3 border-t border-slate-200">
+                            <p class="text-xs font-bold tracking-wide uppercase text-afochMedio">Datos generales</p>
+                            <div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-fundacion">Año de fundación</label><input id="c-fundacion" type="number" class="campo" placeholder="1950" inputmode="numeric" min="1800" max="2100"></div><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-afiliacion">Afiliado desde</label><input id="c-afiliacion" type="number" class="campo" placeholder="1985" inputmode="numeric" min="1800" max="2100"></div></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-apodo">Apodo <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-apodo" type="text" class="campo" placeholder="El Celeste" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-colores">Colores</label><input id="c-colores" type="text" class="campo" placeholder="Celeste y blanco" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-rival">Rival clásico <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-rival" type="text" class="campo" placeholder="Club Deportivo ..." ></div>
+                            <div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-socios">Cantidad de socios <span class="font-normal text-slate-500">(aprox.)</span></label><input id="c-socios" type="number" class="campo" placeholder="450" inputmode="numeric" min="0"></div><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-personeria">Personería jurídica <span class="font-normal text-slate-500">(N°)</span></label><input id="c-personeria" type="text" class="campo" placeholder="Res. 123/1950" ></div></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-categorias">Categorías</label><textarea id="c-categorias" rows="2" class="campo" placeholder="Primera, Reserva, Sub-17, Sub-15"></textarea><p class="text-xs text-slate-500 mt-1">Separalas con coma. La cantidad se cuenta sola.</p></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-historia">Historia</label><textarea id="c-historia" rows="6" class="campo" placeholder="Fundado el..."></textarea><p class="text-xs text-slate-500 mt-1">Dejá una línea en blanco para separar párrafos.</p></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-titulos">Palmarés / títulos <span class="font-normal text-slate-500">(opcional)</span></label><textarea id="c-titulos" rows="4" class="campo" placeholder="Campeón Torneo Apertura 2019
+Campeón Liga 2022"></textarea><p class="text-xs text-slate-500 mt-1">Un logro por línea.</p></div>
+                            <p class="text-xs font-bold tracking-wide uppercase text-afochMedio pt-3 mt-1 border-t border-slate-200">Comisión directiva</p>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-presidente">Presidente</label><input id="c-presidente" type="text" class="campo" placeholder="Nombre y apellido" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-vicepresidente">Vicepresidente</label><input id="c-vicepresidente" type="text" class="campo" placeholder="Nombre y apellido" ></div>
+                            <div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-secretario">Secretario <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-secretario" type="text" class="campo" placeholder="Nombre y apellido" ></div><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-tesorero">Tesorero <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-tesorero" type="text" class="campo" placeholder="Nombre y apellido" ></div></div>
+                            <p class="text-xs font-bold tracking-wide uppercase text-afochMedio pt-3 mt-1 border-t border-slate-200">Sede y cancha</p>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-localidad">Localidad</label><input id="c-localidad" type="text" class="campo" placeholder="Villa Ángela" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-direccion">Dirección de la sede</label><input id="c-direccion" type="text" class="campo" placeholder="Av. San Martín 123" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-estadio">Cancha / estadio</label><input id="c-estadio" type="text" class="campo" placeholder="Estadio Municipal" ></div>
+                            <div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-capacidad">Capacidad <span class="font-normal text-slate-500">(personas)</span></label><input id="c-capacidad" type="number" class="campo" placeholder="2000" inputmode="numeric" min="0"></div><div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-superficie">Superficie</label><select id="c-superficie" class="campo"><option value="">—</option><option>Césped natural</option><option>Césped sintético</option><option>Tierra</option><option>Otra</option></select></div></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-mapa">Link de Google Maps <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-mapa" class="campo" placeholder="https://maps.app.goo.gl/..."><p class="text-xs text-slate-500 mt-1">Si lo dejás vacío, el botón "Cómo llegar" se arma con la dirección.</p></div>
+                            <p class="text-xs font-bold tracking-wide uppercase text-afochMedio pt-3 mt-1 border-t border-slate-200">Contacto y redes</p>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-telefono">Teléfono <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-telefono" type="tel" class="campo" placeholder="362 4123456" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-email">Email <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-email" type="email" class="campo" placeholder="club@ejemplo.com" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-web">Sitio web <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-web" type="text" class="campo" placeholder="https://..." ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-instagram">Instagram <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-instagram" type="text" class="campo" placeholder="@nombredelclub o link" ></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1" for="c-facebook">Facebook <span class="font-normal text-slate-500">(opcional)</span></label><input id="c-facebook" type="text" class="campo" placeholder="https://facebook.com/..." ></div>
+                        </div>
+                    </details>
                     <div class="flex gap-3 pt-2">
                         <button id="c-guardar" class="btn">Guardar club</button>
                         <button id="c-cancelar" class="btn-sec hidden">Cancelar</button>
@@ -234,14 +265,15 @@
                     </div>
                     <div class="flex flex-wrap gap-3 pt-2">
                         <button id="b-guardar" class="btn">Guardar banner</button>
-                        <button id="b-restaurar" class="btn-sec hidden">Volver a la imagen por defecto</button>
+                        <button id="b-restaurar" class="btn-sec hidden">Quitar banner</button>
                     </div>
-                    <p class="text-xs text-slate-500">Usá una foto horizontal (por ejemplo 1600 × 1067 px) con lo importante en el centro: en el celular se recorta un poco los costados. Se achica sola antes de subir.</p>
+                    <p class="text-xs text-slate-500">La imagen se muestra como fondo suave detrás del título del inicio, en tonos grises. Usá una foto horizontal (por ejemplo 1600 × 1000 px). Si se superpone o molesta, usá <strong>Quitar banner</strong>: la web queda solo con el diseño, sin imagen. Se achica sola antes de subir.</p>
                 </div>
                 <div class="bg-white border border-slate-200 p-5 sm:p-6 self-start">
                     <h2 class="font-sports uppercase text-xl text-afochAzul pb-2 border-b-2 border-afochCeleste mb-4">Banner actual</h2>
                     <p id="b-origen" class="text-xs text-slate-500 mb-3"></p>
-                    <img id="b-actual" class="w-full max-h-72 object-cover border border-slate-200 bg-slate-100" alt="Banner actual de la web">
+                    <img id="b-actual" class="hidden w-full max-h-72 object-cover border border-slate-200 bg-slate-100" alt="Banner actual de la web">
+                    <div id="b-vacio" class="hidden border border-dashed border-slate-300 bg-slate-50 py-10 px-4 text-center text-sm text-slate-500">Sin banner. La web muestra solo el diseño del inicio.</div>
                 </div>
             </div>
         </section>
@@ -333,7 +365,8 @@
             $('lista-clubes').innerHTML = clubes.length ? clubes.map(c => `
                 <li class="flex flex-wrap items-center gap-x-4 gap-y-2 p-3">
                     ${c.escudoUrl ? `<img src="${esc(optimizar(c.escudoUrl, 80))}" class="w-10 h-10 object-contain" alt="">` : '<div class="w-10 h-10 bg-slate-100"></div>'}
-                    <div class="flex-1 min-w-[10rem]"><div class="font-semibold text-afochAzul">${esc(c.nombre)}</div><div class="text-xs text-slate-500">${esc(c.nombreCorto)}</div></div>
+                    <div class="flex-1 min-w-[10rem]"><div class="font-semibold text-afochAzul">${esc(c.nombre)}</div><div class="text-xs text-slate-500">${esc(c.nombreCorto)}${(c.historia || (c.categorias || []).length || c.direccion || c.presidente) ? '' : ' · <span class="text-amber-600">Sin ficha</span>'}</div></div>
+                    <a href="clubes.html?id=${encodeURIComponent(c.id)}" target="_blank" rel="noopener" class="text-sm font-semibold text-slate-600 hover:text-afochMedio hover:underline">Ver</a>
                     <button data-edit-club="${c.id}" class="text-sm font-semibold text-afochMedio hover:underline">Editar</button>
                     <button data-del-club="${c.id}" class="text-sm font-semibold text-red-600 hover:underline">Eliminar</button>
                 </li>`).join('') : '<li class="p-4 text-sm text-slate-500">Todavía no cargaste clubes. Empezá con el formulario de la izquierda.</li>';
@@ -342,9 +375,20 @@
             $('p-visit').innerHTML = opciones;
         }
 
+        const CAMPOS_FICHA = ['c-fundacion', 'c-localidad', 'c-direccion', 'c-estadio', 'c-colores', 'c-categorias', 'c-historia', 'c-mapa', 'c-instagram', 'c-facebook', 'c-afiliacion', 'c-apodo', 'c-rival', 'c-socios', 'c-personeria', 'c-titulos', 'c-presidente', 'c-vicepresidente', 'c-secretario', 'c-tesorero', 'c-capacidad', 'c-superficie', 'c-telefono', 'c-email', 'c-web'];
+        const entero = id => { const n = parseInt($(id).value, 10); return Number.isFinite(n) && n >= 0 ? n : ''; };
+        const lineas = v => v.split(/\n/).map(x => x.trim()).filter(Boolean);
+        const urlHttp = v => { v = v.trim(); return v && !/^https?:\/\//i.test(v) ? 'https://' + v : v; };
+        const urlInstagram = v => {
+            v = v.trim().replace(/^@/, '');
+            if (!v) return '';
+            return /^https?:\/\//i.test(v) ? v : /instagram\.com/i.test(v) ? 'https://' + v : 'https://instagram.com/' + v;
+        };
+
         function limpiarClub() {
             clubEdit = null;
-            ['c-nombre', 'c-corto', 'c-escudo'].forEach(i => $(i).value = '');
+            ['c-nombre', 'c-corto', 'c-escudo', ...CAMPOS_FICHA].forEach(i => $(i).value = '');
+            $('c-ficha').open = false;
             $('c-preview').classList.add('hidden');
             $('club-titulo').textContent = 'Nuevo club';
             $('c-cancelar').classList.add('hidden');
@@ -361,7 +405,35 @@
             if (!nombre) return aviso('Escribí el nombre del club.', true);
             try {
                 aviso('Guardando club...');
-                const data = { nombre, nombreCorto: $('c-corto').value.trim() || nombre };
+                const anio = parseInt($('c-fundacion').value, 10);
+                const data = {
+                    nombre, nombreCorto: $('c-corto').value.trim() || nombre,
+                    fundacion: Number.isFinite(anio) ? anio : '',
+                    localidad: $('c-localidad').value.trim(),
+                    direccion: $('c-direccion').value.trim(),
+                    estadio: $('c-estadio').value.trim(),
+                    colores: $('c-colores').value.trim(),
+                    categorias: $('c-categorias').value.split(/[,\n]/).map(x => x.trim()).filter(Boolean),
+                    historia: $('c-historia').value.trim(),
+                    mapaUrl: urlHttp($('c-mapa').value),
+                    instagram: urlInstagram($('c-instagram').value),
+                    facebook: urlHttp($('c-facebook').value),
+                    afiliacion: entero('c-afiliacion'),
+                    apodo: $('c-apodo').value.trim(),
+                    rivalClasico: $('c-rival').value.trim(),
+                    socios: entero('c-socios'),
+                    personeria: $('c-personeria').value.trim(),
+                    titulos: lineas($('c-titulos').value),
+                    presidente: $('c-presidente').value.trim(),
+                    vicepresidente: $('c-vicepresidente').value.trim(),
+                    secretario: $('c-secretario').value.trim(),
+                    tesorero: $('c-tesorero').value.trim(),
+                    capacidad: entero('c-capacidad'),
+                    superficie: $('c-superficie').value,
+                    telefono: $('c-telefono').value.trim(),
+                    email: $('c-email').value.trim().toLowerCase(),
+                    web: urlHttp($('c-web').value)
+                };
                 const archivo = $('c-escudo').files[0];
                 if (archivo) {
                     const { url, publicId } = await subirImagen(archivo, 'afoch/escudos');
@@ -380,6 +452,21 @@
                 const c = clubes.find(x => x.id === ed);
                 clubEdit = ed;
                 $('c-nombre').value = c.nombre; $('c-corto').value = c.nombreCorto || '';
+                $('c-fundacion').value = c.fundacion ?? ''; $('c-localidad').value = c.localidad || '';
+                $('c-direccion').value = c.direccion || ''; $('c-estadio').value = c.estadio || '';
+                $('c-colores').value = c.colores || '';
+                $('c-categorias').value = Array.isArray(c.categorias) ? c.categorias.join(', ') : (c.categorias || '');
+                $('c-historia').value = c.historia || ''; $('c-mapa').value = c.mapaUrl || '';
+                $('c-instagram').value = c.instagram || ''; $('c-facebook').value = c.facebook || '';
+                $('c-afiliacion').value = c.afiliacion ?? ''; $('c-apodo').value = c.apodo || '';
+                $('c-rival').value = c.rivalClasico || ''; $('c-socios').value = c.socios ?? '';
+                $('c-personeria').value = c.personeria || '';
+                $('c-titulos').value = Array.isArray(c.titulos) ? c.titulos.join('\n') : (c.titulos || '');
+                $('c-presidente').value = c.presidente || ''; $('c-vicepresidente').value = c.vicepresidente || '';
+                $('c-secretario').value = c.secretario || ''; $('c-tesorero').value = c.tesorero || '';
+                $('c-capacidad').value = c.capacidad ?? ''; $('c-superficie').value = c.superficie || '';
+                $('c-telefono').value = c.telefono || ''; $('c-email').value = c.email || ''; $('c-web').value = c.web || '';
+                $('c-ficha').open = true;
                 if (c.escudoUrl) { $('c-preview').src = optimizar(c.escudoUrl, 160); $('c-preview').classList.remove('hidden'); }
                 $('club-titulo').textContent = 'Editar club';
                 $('c-cancelar').classList.remove('hidden');
@@ -665,14 +752,14 @@
         });
 
         /* ---- banner principal ---- */
-        const BANNER_DEFAULT = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200';
-
         async function recargarBanner() {
             try {
                 const c = await obtenerConfigHome();
                 const url = c?.bannerUrl || '';
-                $('b-actual').src = url ? optimizar(url, 900) : BANNER_DEFAULT;
-                $('b-origen').textContent = url ? 'Imagen personalizada' : 'Imagen por defecto';
+                if (url) $('b-actual').src = optimizar(url, 900);
+                $('b-actual').classList.toggle('hidden', !url);
+                $('b-vacio').classList.toggle('hidden', !!url);
+                $('b-origen').textContent = url ? 'Imagen personalizada activa en la web' : 'Sin imagen';
                 $('b-restaurar').classList.toggle('hidden', !url);
             } catch (e) { console.error(e); aviso('No se pudo leer el banner: ' + e.message, true); }
         }
@@ -698,12 +785,12 @@
         });
 
         $('b-restaurar').addEventListener('click', async () => {
-            if (!confirm('¿Volver a la imagen por defecto del banner?')) return;
+            if (!confirm('¿Quitar el banner? La web va a mostrar solo el diseño, sin imagen.')) return;
             try {
                 await guardarConfigHome({ bannerUrl: '', bannerPublicId: '' });
                 await recargarBanner();
-                aviso('Banner restaurado a la imagen por defecto.');
-            } catch (e) { console.error(e); aviso('No se pudo restaurar el banner: ' + e.message, true); }
+                aviso('Banner quitado. Ya no se muestra en la web.');
+            } catch (e) { console.error(e); aviso('No se pudo quitar el banner: ' + e.message, true); }
         });
     </script>
 </body>
