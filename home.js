@@ -81,12 +81,12 @@ async function cargarComunicados() {
         const conPdf = Boolean(c.driveId);
         const href = conPdf ? `comunicados.html?id=${encodeURIComponent(c.id)}` : 'comunicados.html';
         return `
-        <a href="${escHtml(href)}" class="group block py-4 first:pt-0 last:pb-0">
-            <div class="flex justify-between text-[11px] font-semibold tracking-wide uppercase mb-1">
-                <span class="text-afochMedio">${escHtml(c.categoria)} · N° ${escHtml(c.numero)}</span>
-                <span class="text-slate-500 normal-case font-normal">${escHtml(fecha)}</span>
+        <a href="${escHtml(href)}" class="group block min-w-0 py-4 first:pt-0 last:pb-0">
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4 text-[11px] font-semibold tracking-wide uppercase mb-1">
+                <span class="text-afochMedio break-words">${escHtml(c.categoria)} · N° ${escHtml(c.numero)}</span>
+                <span class="text-slate-500 normal-case font-normal shrink-0">${escHtml(fecha)}</span>
             </div>
-            <h3 class="font-sports uppercase text-lg leading-snug text-afochAzul group-hover:text-afochMedio transition">${escHtml(c.titulo)}</h3>
+            <h3 class="font-sports uppercase text-base sm:text-lg leading-snug text-afochAzul break-words group-hover:text-afochMedio transition">${escHtml(c.titulo)}</h3>
             ${conPdf ? '<span class="text-xs text-slate-500 group-hover:text-afochMedio">Ver PDF →</span>' : ''}
         </a>`;
     }).join('');
@@ -197,19 +197,16 @@ function verFoto(f) {
     d.showModal();
 }
 
-/** Banner principal: imagen elegida en el panel (o la de por defecto). Aparece con un fundido cuando termina de cargar. */
-const BANNER_DEFAULT = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200';
+/** Fondo del hero: el diseño es 100% código. Si en el panel se eligió una imagen, se suma como textura sutil de fondo. */
 async function cargarBanner() {
     const img = document.getElementById('banner-principal');
     if (!img) return;
-    let url = BANNER_DEFAULT;
     try {
         const c = await obtenerConfigHome();
-        if (c?.bannerUrl) url = optimizar(c.bannerUrl, 1400);
+        if (!c?.bannerUrl) return;
+        img.onload = () => img.classList.replace('opacity-0', 'opacity-30');
+        img.src = optimizar(c.bannerUrl, 1600);
     } catch (e) { console.error('No se pudo leer el banner', e); }
-    img.onload = () => img.classList.remove('opacity-0');
-    img.onerror = () => { if (img.src !== BANNER_DEFAULT) img.src = BANNER_DEFAULT; };
-    img.src = url;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
