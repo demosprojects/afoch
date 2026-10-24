@@ -15,7 +15,7 @@
     <div id="site-header"></div>
     <div id="page-banner" data-titulo="Noticias" data-bajada="Novedades y notas de prensa de la Asociación."></div>
 
-    <main class="container mx-auto px-6 py-6 md:py-10 flex-1">
+    <main class="container mx-auto px-4 sm:px-6 py-5 md:py-10 flex-1">
         <div id="contenido"></div>
     </main>
 
@@ -66,15 +66,15 @@
                     return;
                 }
                 document.title = `${n.titulo} | AFOCH`;
-                const parrafos = String(n.contenido || '').split(/\n\s*\n/).map(p => `<p class="mb-4">${esc(p).replace(/\n/g, '<br>')}</p>`).join('');
+                const parrafos = String(n.contenido || '').split(/\n\s*\n/).map(p => `<p class="mb-3 sm:mb-4">${esc(p).replace(/\n/g, '<br>')}</p>`).join('');
                 cont.innerHTML = `
-                <article class="max-w-3xl bg-white border border-slate-200 p-5 md:p-10">
+                <article class="max-w-5xl mx-auto min-w-0 bg-white border border-slate-200 p-4 sm:p-6 md:p-10 lg:p-14">
                     <a href="noticias.html" class="text-sm font-semibold text-afochMedio hover:underline">← Volver a noticias</a>
-                    <div class="flex gap-4 text-[11px] font-semibold tracking-wide uppercase mt-6 mb-2"><span class="text-afochMedio">${esc(n.categoria)}</span><span class="text-slate-500 normal-case font-normal">${esc(fmt(n.fecha))}</span></div>
-                    <h2 class="font-sports uppercase text-2xl sm:text-3xl text-afochAzul leading-tight mb-6">${esc(n.titulo)}</h2>
-                    ${n.imagenUrl ? `<img src="${esc(optimizar(n.imagenUrl, 1200))}" class="w-full max-h-[240px] sm:max-h-[420px] object-cover mb-6" alt="">` : ''}
-                    ${n.resumen ? `<p class="text-lg text-slate-700 font-semibold mb-4">${esc(n.resumen)}</p>` : ''}
-                    <div class="text-slate-700 leading-relaxed">${parrafos}</div>
+                    <div class="flex flex-wrap gap-x-4 gap-y-0.5 text-[11px] font-semibold tracking-wide uppercase mt-4 sm:mt-6 mb-2"><span class="text-afochMedio">${esc(n.categoria)}</span><span class="text-slate-500 normal-case font-normal">${esc(fmt(n.fecha))}</span></div>
+                    <h2 class="font-sports uppercase text-xl sm:text-3xl lg:text-4xl text-afochAzul leading-tight break-words mb-4 sm:mb-6">${esc(n.titulo)}</h2>
+                    ${n.imagenUrl ? `<img src="${esc(optimizar(n.imagenUrl, 1200))}" class="w-full aspect-video sm:aspect-auto sm:max-h-[420px] lg:max-h-[520px] object-cover mb-4 sm:mb-6" alt="">` : ''}
+                    ${n.resumen ? `<p class="text-base sm:text-lg lg:text-xl text-slate-700 font-semibold leading-snug sm:leading-normal mb-3 sm:mb-4">${esc(n.resumen)}</p>` : ''}
+                    <div class="text-[15px] sm:text-base lg:text-lg text-slate-700 leading-relaxed break-words">${parrafos}</div>
                 </article>`;
             } catch (e) { console.error(e); cont.innerHTML = errorCarga('la noticia'); }
         }
