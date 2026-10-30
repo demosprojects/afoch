@@ -40,6 +40,7 @@
             <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600" aria-label="Principal">
                 <a href="index.html" class="text-afochAzul border-b-2 border-afochCeleste py-5">Inicio</a>
                 <a href="torneos.html" class="hover:text-afochMedio py-5">Torneos</a>
+                <a href="posiciones.html" class="hover:text-afochMedio py-5">Posiciones</a>
                 <a href="noticias.html" class="hover:text-afochMedio py-5">Noticias</a>
                 <a href="clubes.html" class="hover:text-afochMedio py-5">Clubes</a>
                 <a href="comunicados.html" class="hover:text-afochMedio py-5">Comunicados</a>
@@ -49,6 +50,7 @@
             <div class="flex justify-around overflow-x-auto px-2 text-center text-[12px] font-semibold text-slate-600 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <a href="index.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 text-afochAzul border-afochCeleste" aria-current="page">Inicio</a>
                 <a href="torneos.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 border-transparent">Torneos</a>
+                <a href="posiciones.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 border-transparent">Posiciones</a>
                 <a href="noticias.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 border-transparent">Noticias</a>
                 <a href="clubes.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 border-transparent">Clubes</a>
                 <a href="comunicados.html" class="shrink-0 whitespace-nowrap px-2 py-3 border-b-2 border-transparent">Comunicados</a>
@@ -82,7 +84,6 @@
             <div>
                 <div class="hero-in flex items-center gap-3 mb-5">
                     <span class="w-10 h-1 bg-afochCeleste"></span>
-                    <span class="text-xs font-semibold tracking-widest uppercase text-afochCeleste">Temporada 2026</span>
                 </div>
                 <h1 class="hero-in hero-d1 font-sports uppercase text-4xl sm:text-5xl lg:text-7xl leading-[1.03]">Fútbol del<br><span class="text-afochCeleste">Oeste Chaqueño</span></h1>
                 <p class="hero-in hero-d2 mt-5 text-white/80 max-w-lg text-base sm:text-lg leading-relaxed">Información oficial de la Asociación: comunicados, programación de partidos y clubes afiliados.</p>
@@ -90,10 +91,28 @@
                     <a href="comunicados.html" class="bg-afochCeleste text-afochAzul font-semibold px-6 py-3 flex-1 sm:flex-none text-center hover:bg-white transition">Ver comunicados</a>
                     <a href="torneos.html" class="border border-white/60 text-white font-semibold px-6 py-3 flex-1 sm:flex-none text-center hover:bg-white hover:text-afochAzul transition">Torneos y fixture</a>
                 </div>
-                <p class="hero-in hero-d4 mt-8 text-xs tracking-wide text-white/60 flex items-center gap-2">
-                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                    Villa Ángela, Chaco · Argentina
-                </p>
+                <div class="hero-in hero-d4 mt-8 grid sm:grid-cols-2 gap-3 max-w-xl">
+                    <div class="flex items-start gap-3 border border-white/15 bg-white/5 backdrop-blur-sm p-3 sm:p-4">
+                        <span class="shrink-0 w-9 h-9 rounded-full bg-afochCeleste/15 text-afochCeleste flex items-center justify-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                        </span>
+                        <div class="min-w-0 leading-snug">
+                            <div class="text-[11px] font-semibold tracking-widest uppercase text-afochCeleste mb-0.5">Ubicación</div>
+                            <div class="text-sm font-semibold text-white">España 375</div>
+                            <div class="text-xs text-white/70">Villa Ángela, Chaco</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 border border-white/15 bg-white/5 backdrop-blur-sm p-3 sm:p-4">
+                        <span class="shrink-0 w-9 h-9 rounded-full bg-afochCeleste/15 text-afochCeleste flex items-center justify-center">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                        </span>
+                        <div class="min-w-0 leading-snug">
+                            <div class="text-[11px] font-semibold tracking-widest uppercase text-afochCeleste mb-0.5">Horario de atención</div>
+                            <div class="text-sm font-semibold text-white">Mañana: 9 a 12 hs</div>
+                            <div class="text-sm font-semibold text-white">Tarde: 17 a 21 hs</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Escudo -->
@@ -151,6 +170,16 @@
         </div>
     </section>
 
+    <section id="seccion-posiciones" class="container mx-auto px-6 pb-10 md:pb-14 hidden">
+        <div class="bg-white border border-slate-200 p-4 sm:p-6">
+            <div class="flex items-baseline justify-between mb-2 pb-3 border-b-2 border-afochCeleste">
+                <h2 class="font-sports uppercase text-2xl text-afochAzul">Tablas de posiciones</h2>
+                <a href="posiciones.html" class="text-sm font-semibold text-afochMedio hover:underline">Ver todas</a>
+            </div>
+            <div id="contenedor-posiciones"></div>
+        </div>
+    </section>
+
     <section id="seccion-noticias" class="bg-white border-y border-slate-200 py-10 md:py-14 hidden">
         <div class="container mx-auto px-6">
             <div class="flex items-baseline justify-between mb-8 pb-3 border-b-2 border-afochCeleste">
@@ -186,6 +215,7 @@
                 <h3 class="font-sports uppercase tracking-wide mb-4">Secciones</h3>
                 <ul class="space-y-3 text-sm text-white/70">
                     <li><a href="torneos.html" class="hover:text-white">Torneos</a></li>
+                    <li><a href="posiciones.html" class="hover:text-white">Posiciones</a></li>
                     <li><a href="noticias.html" class="hover:text-white">Noticias</a></li>
                     <li><a href="clubes.html" class="hover:text-white">Clubes</a></li>
                     <li><a href="comunicados.html" class="hover:text-white">Comunicados</a></li>
