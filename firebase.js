@@ -6,7 +6,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import {
     getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
-    query, orderBy, where, limit, Timestamp, serverTimestamp
+    query, orderBy, where, limit, Timestamp, serverTimestamp, writeBatch, onSnapshot
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 import {
     getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
@@ -178,3 +178,61 @@ export async function obtenerProgramacion() {
     return snap.exists() ? snap.data() : null;
 }
 export const guardarProgramacion = texto => setDoc(doc(db, "config", "programacion"), { texto: String(texto || ""), actualizado: serverTimestamp() });
+
+/* ---------- POSICIONES (tablas por categoría y zona) ---------- */
+// posiciones/{id}: tipo ('tabla' | 'promedios'), grupo (primera | sub20 | juveniles | infantiles | veteranos | promedios),
+//                  categoria, zona, torneo, copa, criterio ('puntos' | 'promedio'), nota, orden (número), publicada (bool),
+//                  clubes: [{ nombre, g, e, p, gf, gc, ajuste, clasificado, marca }]   (en promedios: { nombre, periodos: [{ pj, pts }] })
+//                  periodos: ['TA 23', ...] (solo promedios), actualizado
+// PJ, PTS, DG y promedio NO se guardan: se calculan al mostrar (posiciones.js).
+const aPosicion = d => { const t = conId(d); t.fecha = t.actualizado?.toDate?.() ?? null; return t; };
+
+/** Tablas en el orden del Excel. Por defecto solo las publicadas (el panel pide todas). */
+export async function listarPosiciones(soloPublicadas = true) {
+    const snap = await getDocs(query(collection(db, "posiciones"), orderBy("orden")));
+    const lista = snap.docs.map(aPosicion);
+    return soloPublicadas ? lista.filter(t => t.publicada !== false) : lista;
+}
+const limpiarPosicion = ({ id, fecha, avisos, hoja, incluir, ...datos }) => ({ ...datos, actualizado: serverTimestamp() });
+export const guardarPosicion = (id, data) => setDoc(doc(db, "posiciones", id), limpiarPosicion(data));
+/** Guarda varias tablas juntas (todas o ninguna). Cada una lleva su `id`. */
+export async function guardarPosiciones(tablas) {
+    const lote = writeBatch(db);
+    tablas.forEach(t => lote.set(doc(db, "posiciones", t.id), limpiarPosicion(t)));
+    await lote.commit();
+}
+export const eliminarPosicion = id => deleteDoc(doc(db, "posiciones", id));
+
+/* ---------- ESCUCHAS EN TIEMPO REAL ----------
+ * Las páginas públicas usan estas funciones en vez de listarX(): Firestore avisa apenas algo cambia
+ * (una noticia nueva, una tabla actualizada…) y la página se redibuja sola, sin recargar.
+ * Cada una devuelve una función para dejar de escuchar. `alError` es opcional.
+ * El primer aviso llega con los datos actuales; los siguientes, solo cuando hay cambios.
+ */
+const escuchar = (consulta, mapear, alCambiar, alError) =>
+    onSnapshot(consulta, snap => alCambiar(mapear(snap)), err => { console.error('Escucha de Firestore', err); alError?.(err); });
+
+export const escucharClubes = (alCambiar, alError) =>
+    escuchar(query(collection(db, "clubes"), orderBy("nombre")), snap => snap.docs.map(conId), alCambiar, alError);
+
+export const escucharNoticias = (max, alCambiar, alError) =>
+    escuchar(query(collection(db, "noticias"), orderBy("fechaPublicacion", "desc"), limit(max)),
+        snap => snap.docs.map(aNoticia).filter(n => n.publicada !== false), alCambiar, alError);
+
+export const escucharComunicados = (max, alCambiar, alError) =>
+    escuchar(query(collection(db, "comunicados"), orderBy("fechaPublicacion", "desc"), limit(max)),
+        snap => snap.docs.map(aComunicado).filter(c => c.publicado !== false), alCambiar, alError);
+
+export const escucharGaleria = (max, alCambiar, alError) =>
+    escuchar(query(collection(db, "galeria"), orderBy("fechaPublicacion", "desc"), limit(max)),
+        snap => snap.docs.map(aFoto).filter(f => f.visible !== false), alCambiar, alError);
+
+export const escucharPosiciones = (alCambiar, alError) =>
+    escuchar(query(collection(db, "posiciones"), orderBy("orden")),
+        snap => snap.docs.map(aPosicion).filter(t => t.publicada !== false), alCambiar, alError);
+
+/** Documentos sueltos de config: el aviso trae los datos, o null si el documento no existe. */
+const escucharDoc = (ruta, alCambiar, alError) =>
+    onSnapshot(doc(db, ...ruta), snap => alCambiar(snap.exists() ? snap.data() : null), err => { console.error('Escucha de Firestore', err); alError?.(err); });
+export const escucharProgramacion = (alCambiar, alError) => escucharDoc(["config", "programacion"], alCambiar, alError);
+export const escucharConfigHome = (alCambiar, alError) => escucharDoc(["config", "home"], alCambiar, alError);
