@@ -227,7 +227,8 @@ export const tarjetaPartido = (f, escudoDe) => filaHtml(f, escudoDe, true);
 /** Dibuja filtros + días dentro de `el`. */
 export function montarProgramacion(el, partidos, { escudoDe } = {}) {
     const cats = [...new Set(partidos.map(p => p.cat).filter(Boolean))];
-    let filtro = '';
+    let filtro = el.dataset.filtroCat || '';           // se conserva si la programación se actualiza en vivo
+    if (filtro && !cats.includes(filtro)) filtro = '';
     const pintar = () => {
         const lista = filtro ? partidos.filter(p => p.cat === filtro) : partidos;
         const filtros = cats.length > 1 ? `<div class="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filtrar por categoría">${['', ...cats].map(c =>
@@ -244,9 +245,9 @@ export function montarProgramacion(el, partidos, { escudoDe } = {}) {
             </section>`).join('');
         el.innerHTML = filtros + dias;
     };
-    el.addEventListener('click', e => {
+    el.onclick = e => {                                  // onclick (y no addEventListener): al volver a montar reemplaza al anterior
         const b = e.target.closest('[data-cat]');
-        if (b) { filtro = b.dataset.cat; pintar(); }
-    });
+        if (b) { filtro = b.dataset.cat; el.dataset.filtroCat = filtro; pintar(); }
+    };
     pintar();
 }
