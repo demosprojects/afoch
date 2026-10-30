@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posiciones | AFOCH</title>
+    <meta name="description" content="Tablas de posiciones de todas las categorías de la Asociación de Fútbol del Oeste Chaqueño: Primera División, Sub 20, juveniles, infantiles y veteranos.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-config.js"></script>
+    <meta name="theme-color" content="#001A3D">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans bg-afochClaro text-slate-800" data-pagina="posiciones">
+
+    <div id="site-header"></div>
+    <div id="page-banner" data-titulo="Posiciones" data-bajada="Tablas de todas las categorías, actualizadas después de cada fecha."></div>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+        <div id="contenedor-posiciones" aria-live="polite"></div>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script src="layout.js"></script>
+    <script type="module">
+        import { escucharPosiciones, escucharClubes } from './firebase.js';
+        import { crearBuscadorEscudos } from './programacion.js';
+        import { montarPosiciones } from './posiciones.js';
+        import { optimizar } from './cloudinary.js';
+        import { cargando, sinDatos, errorCarga } from './ui.js';
+
+        const cont = document.getElementById('contenedor-posiciones');
+        cont.innerHTML = `<div class="grid gap-5 xl:grid-cols-2">${cargando('tabla', 2)}</div>`;
+
+        // Todo se actualiza en vivo: si en el panel se carga o edita una tabla, esta página se redibuja sola.
+        let tablas, clubes = null, buscador = () => '';
+        const escudoDe = n => { const u = buscador(n); return u ? optimizar(u, 80) : ''; };
+        function pintar() {
+            if (tablas === undefined || clubes === null) return;
+            if (!tablas.length) { cont.innerHTML = sinDatos('posiciones'); return; }
+            montarPosiciones(cont, tablas, { escudoDe, sincronizarUrl: true });
+        }
+        escucharClubes(lista => { clubes = lista; buscador = crearBuscadorEscudos(lista); pintar(); },
+                       e => { console.warn('Sin escudos', e); if (clubes === null) clubes = []; pintar(); });
+        escucharPosiciones(lista => { tablas = lista; pintar(); },
+                           e => { console.error('No se pudieron cargar las posiciones', e); cont.innerHTML = errorCarga('las posiciones'); });
+    </script>
+</body>
+</html>
