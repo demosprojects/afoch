@@ -20,14 +20,15 @@ document.head.appendChild(estilos);
 const b = (c = '') => `<div class="sk ${c}"></div>`;
 const SK = {
     partidos: () => `<div class="border border-slate-200 bg-white p-3 sm:p-4"><div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3"><div class="flex flex-col sm:flex-row items-center gap-2">${b('w-10 h-10 sm:w-8 sm:h-8 rounded-full')}${b('h-4 w-20 sm:w-28')}</div>${b('h-8 w-14 sm:w-16')}<div class="flex flex-col-reverse sm:flex-row items-center sm:justify-end gap-2">${b('h-4 w-20 sm:w-28')}${b('w-10 h-10 sm:w-8 sm:h-8 rounded-full')}</div></div>${b('h-3 w-40 mt-4')}</div>`,
-    comunicados: card => `<div class="${card ? 'bg-white border border-slate-200 border-l-4 border-l-afochCeleste p-6' : 'py-4'}"><div class="flex justify-between mb-3">${b('h-3 w-32')}${b('h-3 w-20')}</div>${b('h-6 w-3/4')}${card ? b('h-3 w-full mt-4') + b('h-3 w-2/3 mt-2') : ''}</div>`,
+    comunicados: card => `<div class="${card ? 'bg-white border border-slate-200 border-l-4 border-l-afochCeleste p-4 sm:p-6' : 'py-4'}"><div class="flex justify-between mb-3">${b('h-3 w-32')}${b('h-3 w-20')}</div>${b('h-6 w-3/4')}${card ? b('h-3 w-full mt-4') + b('h-3 w-2/3 mt-2') : ''}</div>`,
     noticias: () => `<div class="bg-white border border-slate-200 overflow-hidden">${b('h-48')}<div class="p-5"><div class="flex justify-between mb-3">${b('h-3 w-20')}${b('h-3 w-24')}</div>${b('h-6 w-full')}${b('h-6 w-2/3 mt-2')}</div></div>`,
     clubes: () => `<div class="bg-white border border-slate-200 p-4 sm:p-6 flex flex-col items-center">${b('w-20 h-20 sm:w-24 sm:h-24 rounded-full')}${b('h-5 w-3/4 mt-4')}</div>`,
     galeria: () => b('h-36 sm:h-56'),
+    tabla: () => `<div class="bg-white border border-slate-200 p-4">${b('h-5 w-32')}<div class="mt-4 space-y-3">${Array.from({ length: 6 }, () => `<div class="flex items-center gap-3">${b('h-6 w-6 rounded-full')}${b('h-4 flex-1')}${b('h-4 w-8')}${b('h-4 w-10')}</div>`).join('')}</div></div>`,
     clubesMini: () => `<div class="flex flex-col items-center gap-2">${b('w-16 h-16 rounded-full')}${b('h-3 w-14')}</div>`
 };
 
-/** Skeletons con la forma del contenido real. tipo: partidos | comunicados | noticias | clubes | clubesMini */
+/** Skeletons con la forma del contenido real. tipo: partidos | comunicados | noticias | clubes | clubesMini | tabla */
 export const cargando = (tipo, n = 3, opcion) =>
     `<span class="sr-only" role="status">Cargando…</span>` + Array.from({ length: n }, () => SK[tipo](opcion)).join('');
 
