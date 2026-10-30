@@ -15,6 +15,7 @@ const ICONOS = {
 const NAV = [
     ['index.html', 'Inicio', 'inicio'],
     ['torneos.html', 'Torneos', 'torneos'],
+    ['posiciones.html', 'Posiciones', 'posiciones'],
     ['noticias.html', 'Noticias', 'noticias'],
     ['clubes.html', 'Clubes', 'clubes'],
     ['comunicados.html', 'Comunicados', 'comunicados']
@@ -96,6 +97,7 @@ if (pie) pie.innerHTML = `
             <h3 class="font-sports uppercase tracking-wide mb-4">Secciones</h3>
             <ul class="space-y-3 text-sm text-white/70">
                 <li><a href="torneos.html" class="hover:text-white">Torneos</a></li>
+                <li><a href="posiciones.html" class="hover:text-white">Posiciones</a></li>
                 <li><a href="noticias.html" class="hover:text-white">Noticias</a></li>
                 <li><a href="clubes.html" class="hover:text-white">Clubes</a></li>
                 <li><a href="comunicados.html" class="hover:text-white">Comunicados</a></li>
