@@ -19,8 +19,11 @@
         <div class="grid lg:grid-cols-[1fr_320px] gap-8">
             <div id="programacion"></div>
             <aside class="bg-white border border-slate-200 p-6 h-fit">
-                <h2 class="font-sports uppercase text-xl text-afochAzul mb-3 pb-3 border-b-2 border-afochCeleste">Posiciones</h2>
-                <div id="posiciones"></div>
+                <div class="flex items-baseline justify-between mb-4 pb-3 border-b-2 border-afochCeleste">
+                    <h2 class="font-sports uppercase text-xl text-afochAzul">Posiciones</h2>
+                    <a href="posiciones.html" class="text-sm font-semibold text-afochMedio hover:underline">Ver todas</a>
+                </div>
+                <div id="posiciones" aria-live="polite"></div>
             </aside>
         </div>
     </main>
@@ -29,16 +32,15 @@
 
     <script type="module" src="layout.js"></script>
     <script type="module">
-        import { listarPartidos } from './firebase.js';
+        import { listarPartidos, escucharProgramacion, escucharClubes, escucharPosiciones } from './firebase.js';
         import { optimizar } from './cloudinary.js';
         import { cargando, sinDatos, errorCarga } from './ui.js';
-        import { obtenerProgramacion, listarClubes } from './firebase.js';
         import { parsearProgramacion, montarProgramacion, crearBuscadorEscudos } from './programacion.js';
+        import { montarCarrusel } from './posiciones.js';
         const $ = id => document.getElementById(id);
         const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const TZ = 'America/Argentina/Buenos_Aires';
-        const vacio = m => `<p class="text-slate-500 text-sm">${m}</p>`;
-        const cont = $('programacion');
+        const cont = $('programacion'), lado = $('posiciones');
         const escudo = u => u ? `<img src="${esc(optimizar(u, 80))}" class="w-10 h-10 sm:w-8 sm:h-8 object-contain shrink-0" alt="">` : '';
         const fila = (p, etiqueta = '') => {
             const hora = p.fecha.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ });
@@ -54,41 +56,51 @@
         };
         const diaLargo = d => d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ });
 
-        $('posiciones').innerHTML = sinDatos('posiciones', true);
-        cont.innerHTML = cargando('partidos', 4);
-        // 1) Programación en texto (la que se pega en el panel). Si no hay, se usa la lista de partidos cargados a mano.
-        let hecho = false;
-        try {
-            const cfg = await obtenerProgramacion();
-            const lista = cfg?.texto ? parsearProgramacion(cfg.texto) : [];
-            if (lista.length) {
-                let escudoDe = () => '';
-                try { const b = crearBuscadorEscudos(await listarClubes()); escudoDe = n => { const u = b(n); return u ? optimizar(u, 80) : ''; }; }
-                catch (e) { console.warn('Sin escudos', e); }
-                montarProgramacion(cont, lista, { escudoDe });
-                hecho = true;
-            }
-        } catch (e) { console.error('No se pudo leer la programación', e); }
+        /* Estado compartido: todo se redibuja solo cuando cambia algo en el panel (sin recargar la página). */
+        let programacion, tablas, clubes = null, buscador = () => '', manuales = null, secuencia = 0;
+        const escudoDe = n => { const u = buscador(n); return u ? optimizar(u, 80) : ''; };
 
-        if (!hecho) try {
-            const todos = await listarPartidos(200);
+        // Respaldo: partidos cargados a mano (se leen una sola vez, solo si no hay programación en texto)
+        async function htmlManuales() {
+            manuales ??= await listarPartidos(200);
             const ahora = new Date();
-            const proximos = todos.filter(p => p.estado === 'programado' && p.fecha >= ahora).sort((a, b) => a.fecha - b.fecha);
-            const suspendidos = todos.filter(p => p.estado === 'suspendido').sort((a, b) => a.fecha - b.fecha);
-
+            const proximos = manuales.filter(p => p.estado === 'programado' && p.fecha >= ahora).sort((a, b) => a.fecha - b.fecha);
+            const suspendidos = manuales.filter(p => p.estado === 'suspendido').sort((a, b) => a.fecha - b.fecha);
             const porDia = new Map();
             proximos.forEach(p => { const k = diaLargo(p.fecha); porDia.set(k, [...(porDia.get(k) || []), p]); });
-
             let html = '';
             if (!proximos.length) html += sinDatos('partidos');
             porDia.forEach((partidos, dia) => {
                 html += `<h2 class="font-sports uppercase text-lg text-afochMedio mt-8 first:mt-0 mb-3 capitalize">${esc(dia)}</h2><div class="space-y-3">${partidos.map(p => fila(p)).join('')}</div>`;
             });
-            if (suspendidos.length) {
-                html += `<h2 class="font-sports uppercase text-lg text-amber-700 mt-10 mb-3">Partidos suspendidos</h2><div class="space-y-3">${suspendidos.map(p => fila(p, 'SUSP.')).join('')}</div>`;
-            }
-            cont.innerHTML = html;
-        } catch (e) { console.error(e); cont.innerHTML = errorCarga('la programación'); }
-</script>
+            if (suspendidos.length) html += `<h2 class="font-sports uppercase text-lg text-amber-700 mt-10 mb-3">Partidos suspendidos</h2><div class="space-y-3">${suspendidos.map(p => fila(p, 'SUSP.')).join('')}</div>`;
+            return html;
+        }
+
+        async function pintarProgramacion() {
+            if (programacion === undefined || clubes === null) return;
+            const mia = ++secuencia;
+            const lista = programacion?.texto ? parsearProgramacion(programacion.texto) : [];
+            if (lista.length) { montarProgramacion(cont, lista, { escudoDe }); return; }
+            try { const html = await htmlManuales(); if (mia === secuencia) cont.innerHTML = html; }
+            catch (e) { console.error(e); if (mia === secuencia) cont.innerHTML = errorCarga('la programación'); }
+        }
+
+        function pintarPosiciones() {
+            if (tablas === undefined || clubes === null) return;
+            if (!tablas.length) { montarCarrusel(lado, [], {}); lado.innerHTML = sinDatos('posiciones', true); return; }
+            montarCarrusel(lado, tablas, { escudoDe });
+        }
+
+        cont.innerHTML = cargando('partidos', 4);
+        lado.innerHTML = cargando('tabla', 1);
+
+        escucharClubes(lista => { clubes = lista; buscador = crearBuscadorEscudos(lista); pintarProgramacion(); pintarPosiciones(); },
+                       e => { console.warn('Sin escudos', e); if (clubes === null) clubes = []; pintarProgramacion(); pintarPosiciones(); });
+        escucharProgramacion(cfg => { programacion = cfg; pintarProgramacion(); },
+                             e => { console.error('No se pudo leer la programación', e); programacion = null; pintarProgramacion(); });
+        escucharPosiciones(lista => { tablas = lista; pintarPosiciones(); },
+                           e => { console.error('No se pudieron cargar las posiciones', e); lado.innerHTML = errorCarga('las posiciones', true); });
+    </script>
 </body>
 </html>
